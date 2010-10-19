@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>diskStorage Unit Tests</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script type="text/javascript" src="lib/qunit/qunit/qunit.js"></script>
+	<script type="text/javascript" src="src/diskStorage.js"></script>
+	<link type="text/css" rel="stylesheet" href="lib/qunit/qunit/qunit.css" media="screen" />
+</head>
+<body>
+
+<div id="unit-output" style="width: 550px">
+	<h1 id="qunit-header">diskStorage Unit Tests</h1>
+	<h2 id="qunit-banner"></h2>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"><li></li></ol>
+</div>
+
+<script type="text/javascript">
+
+if (diskStorage.isSupported()) {
+	localStorage.clear();
+
+	test('diskStorage.setItem()/diskStorage.getItem()', function() {
+		diskStorage.setItem('a', 'alpha');
+		equal(localStorage.getItem('\u0001a'), 'alpha');
+
+		diskStorage.setItem('b', '2');
+		equal(localStorage.getItem('\u0001b'), '2');
+
+		diskStorage.setItem('b', new String('2'));
+		equal(localStorage.getItem('\u0001b'), '2');
+
+		diskStorage.setItem('b', 2);
+		equal(localStorage.getItem('\u0001b'), '\u00022');
+
+		diskStorage.setItem('c', [1,2,3]);
+		equal(localStorage.getItem('\u0001c'), '\u0002[1,2,3]');
+
+		diskStorage.setItem('c', [1,2,3]);
+		deepEqual(diskStorage.getItem('c'), [1,2,3]);
+
+		diskStorage.setItem('d', {d:'dog'});
+		deepEqual(diskStorage.getItem('d'), {d:'dog'});
+
+		deepEqual(localStorage.length, 4);
+		deepEqual(diskStorage.length, 4);
+	});
+}
+else {
+	alert('This browser does not support diskStorage.');
+}
+</script>
+
+</body>
+</html>

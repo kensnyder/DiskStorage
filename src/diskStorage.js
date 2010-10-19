@@ -38,15 +38,6 @@
 		this.subscribers = [];
 	}
 
-	DiskStorage.isSupported = function isSupported() {
-		// from http://diveintohtml5.org/storage.html
-		try {
-			return 'localStorage' in window && window['localStorage'] !== null;
-		} catch (e) {
-			return false;
-		}
-	};
-
 	DiskStorage.prototype.setItem = function setItem(key, value) {
 		// if not a string, serialize to JSON
 		value = Object.prototype.toString.call(value) == '[object String]' ? value : '\u0002' + JSON.stringify(value);
@@ -62,8 +53,8 @@
 
 	DiskStorage.prototype.getItem = function getItem(key) {
 		// prefix with '\t' to avoid collisions such as 'toString'
-		var value = window.localStorage.getItem('\t' + key, value);
-		if (value.charAt(0) == '\u0002') {
+		var value = window.localStorage.getItem('\u0001' + key, value);
+		if (value && value.charAt(0) == '\u0002') {
 			// if prefixed with our special char, unserialize JSON
 			value = JSON.parse(value.slice(1));
 		}
@@ -113,6 +104,16 @@
 	};
 
 	global.diskStorage = new DiskStorage;
+
+	global.diskStorage.isSupported = function isSupported() {
+		// from http://diveintohtml5.org/storage.html
+		try {
+			return 'localStorage' in window && window['localStorage'] !== null;
+		}
+		catch (e) {
+			return false;
+		}
+	};
 
 	// clean up memory for IE8
 	var isSupported = null,
