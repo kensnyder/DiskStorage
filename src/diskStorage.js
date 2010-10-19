@@ -39,12 +39,12 @@
 	}
 
 	DiskStorage.prototype.setItem = function setItem(key, value) {
-		// if not a string, serialize to JSON
-		value = Object.prototype.toString.call(value) == '[object String]' ? value : '\u0002' + JSON.stringify(value);
 		if (this.subscribers.length > 0) {
 			oldValue = this.getItem(key);
 			this.notify(key, oldValue, value);
 		}
+		// if not a string, serialize to JSON
+		value = Object.prototype.toString.call(value) == '[object String]' ? value : '\u0002' + JSON.stringify(value);
 		// prefix with to avoid collisions with other libs
 		window.localStorage.setItem('\u0001' + key, value);
 		this.length = window.localStorage.length;
@@ -52,7 +52,7 @@
 	};
 
 	DiskStorage.prototype.getItem = function getItem(key) {
-		// prefix with '\t' to avoid collisions such as 'toString'
+		// prefix with to avoid collisions with other libs
 		var value = window.localStorage.getItem('\u0001' + key, value);
 		if (value && value.charAt(0) == '\u0002') {
 			// if prefixed with our special char, unserialize JSON
@@ -66,14 +66,13 @@
 			oldValue = this.getItem(key);
 			this.notify(key, oldValue, undefined);
 		}
-		// prefix with '\t' to avoid collisions such as 'toString'
+		// prefix with to avoid collisions with other libs
 		window.localStorage.removeItem('\u0001' + key);
 		this.length = window.localStorage.length;
 		return this;
 	};
 
 	DiskStorage.prototype.clear = function clear() {
-		// prefix with '\t' to avoid collisions such as 'toString'
 		window.localStorage.clear();
 		this.length = 0;
 		return this;
@@ -84,18 +83,20 @@
 		return this;
 	};
 
-	DiskStorage.prototype.subscribe = function unsubscribe(callback) {
+	DiskStorage.prototype.unsubscribe = function unsubscribe(callback) {
 		var newlist = [], i = 0, fn;
-		while ((fn = this.subscribers[i++])) {
-			if (fn !== callback) {
-				newlist.push(fn);
+		if (arguments.length > 0) {
+			while ((fn = this.subscribers[i++])) {
+				if (fn !== callback) {
+					newlist.push(fn);
+				}
 			}
 		}
 		this.subscribers = newlist;
 		return this;
 	};
 
-	DiskStorage.prototype.notify = function notify(key, newValue, oldValue) {
+	DiskStorage.prototype.notify = function notify(key, oldValue, newValue) {
 		var i = 0, fn;
 		while ((fn = this.subscribers[i++])) {
 			fn({timestamp: +new Date, target: this, key: key, oldValue: oldValue, newValue: newValue, url: window.location.href});
