@@ -34,8 +34,9 @@
 (function(global) {
 
 	function DiskStorage() {
-		this.length = window.localStorage.length;
+		this.length = 0;
 		this.subscribers = [];
+		this.keys = {};
 	}
 
 	DiskStorage.prototype.setItem = function setItem(key, value) {
@@ -47,7 +48,10 @@
 		value = Object.prototype.toString.call(value) == '[object String]' ? value : '\u0002' + JSON.stringify(value);
 		// prefix with to avoid collisions with other libs
 		window.localStorage.setItem('\u0001' + key, value);
-		this.length = window.localStorage.length;
+		if (!(key in this.keys)) {
+			this.length++;
+			this.keys[key] = null;
+		}
 		return this;
 	};
 
@@ -68,13 +72,17 @@
 		}
 		// prefix with to avoid collisions with other libs
 		window.localStorage.removeItem('\u0001' + key);
-		this.length = window.localStorage.length;
+		delete this.keys[key];
+		this.length--;
 		return this;
 	};
 
 	DiskStorage.prototype.clear = function clear() {
-		window.localStorage.clear();
+		for (var key in this.keys) {
+			window.localStorage.removeItem(key);
+		}
 		this.length = 0;
+		this.keys = {};
 		return this;
 	};
 
@@ -109,7 +117,7 @@
 	global.diskStorage.isSupported = function isSupported() {
 		// from http://diveintohtml5.org/storage.html
 		try {
-			return 'localStorage' in window && window['localStorage'] !== null;
+			return 'localStorage' in window && !!window['localStorage'];
 		}
 		catch (e) {
 			return false;
