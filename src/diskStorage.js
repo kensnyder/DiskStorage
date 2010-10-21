@@ -13,7 +13,6 @@
  * diskStorage.isSupported(); // true
  *
  * diskStorage.setItem("prop1", "myString");
- * diskStorage.length; // 1
  * diskStorage.getItem("prop1"); // "myString"
  *
  * diskStorage.setItem("prop2", 5);
@@ -24,10 +23,10 @@
  *
  * // close browser and visit another time: our values persist!
  * diskStorage.removeItem("prop3");
- * diskStorage.length; // 2
+ * diskStorage.getLength(); // 2
  *
  * diskStorage.clear();
- * diskStorage.length = 0;
+ * diskStorage.getLength(); // 0
  *
  * diskStorage.subscribe(myFunction); // myFunction will be triggerred on setItem and removeItem
  */
@@ -37,9 +36,7 @@
 	 * Initialize properties
 	 */
 	function DiskStorage() {
-		this.length = 0;
 		this.subscribers = [];
-		this.keys = {};
 	}
 
 	/**
@@ -55,13 +52,9 @@
 			this.notify(key, oldValue, value);
 		}
 		// if not a string, serialize to JSON
-		value = Object.prototype.toString.call(value) == '[object String]' ? value : '\u0002' + JSON.stringify(value);
+		value = Object.prototype.toString.call(value) == '[object String]' ? value : '\u0001' + JSON.stringify(value);
 		// prefix with to avoid collisions with other libs
-		window.localStorage.setItem('\u0001' + key, value);
-		if (!(key in this.keys)) {
-			this.length++;
-			this.keys[key] = null;
-		}
+		global.localStorage.setItem(key, value);
 		return this;
 	};
 
@@ -72,9 +65,8 @@
 	 * @return {Mixed}
 	 */
 	DiskStorage.prototype.getItem = function getItem(key) {
-		// prefix with to avoid collisions with other libs
-		var value = window.localStorage.getItem('\u0001' + key, value);
-		if (value && value.charAt(0) == '\u0002') {
+		var value = global.localStorage.getItem(key, value);
+		if (value && value.charAt(0) == '\u0001') {
 			// if prefixed with our special char, unserialize JSON
 			value = JSON.parse(value.slice(1));
 		}
@@ -92,10 +84,7 @@
 			oldValue = this.getItem(key);
 			this.notify(key, oldValue, undefined);
 		}
-		// prefix with to avoid collisions with other libs
-		window.localStorage.removeItem('\u0001' + key);
-		delete this.keys[key];
-		this.length--;
+		global.localStorage.removeItem(key);
 		return this;
 	};
 
@@ -105,13 +94,17 @@
 	 * @return {this}
 	 */
 	DiskStorage.prototype.clear = function clear() {
-		for (var key in this.keys) {
-			// TODO: should the callback fire here?
-			window.localStorage.removeItem(key);
-		}
-		this.length = 0;
-		this.keys = {};
+		global.localStorage.clear();
 		return this;
+	};
+
+	/**
+	 * Return the number of items in the collection
+	 *
+	 * @return {Number}
+	 */
+	DiskStorage.prototype.getLength = function getLength() {
+		return global.localStorage.length;
 	};
 
 	/**
@@ -174,7 +167,7 @@
 	global.diskStorage.isSupported = function isSupported() {
 		// from http://diveintohtml5.org/storage.html
 		try {
-			return 'localStorage' in window && !!window['localStorage'];
+			return 'localStorage' in global && !!global.localStorage;
 		}
 		catch (e) {
 			return false;

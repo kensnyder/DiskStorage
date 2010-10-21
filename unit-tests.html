@@ -3,9 +3,9 @@
 <head>
 	<title>diskStorage Unit Tests</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<script type="text/javascript" src="lib/qunit/qunit/qunit.js"></script>
+	<script type="text/javascript" src="qunit/qunit.js"></script>
 	<script type="text/javascript" src="src/diskStorage.js"></script>
-	<link type="text/css" rel="stylesheet" href="lib/qunit/qunit/qunit.css" media="screen" />
+	<link type="text/css" rel="stylesheet" href="qunit/qunit.css" media="screen" />
 </head>
 <body>
 
@@ -23,19 +23,19 @@ if (diskStorage.isSupported()) {
 
 	test('diskStorage.setItem() / diskStorage.getItem()', function() {
 		diskStorage.setItem('a', 'alpha');
-		equal(localStorage.getItem('\u0001a'), 'alpha');
+		equal(localStorage.getItem('a'), 'alpha');
 
 		diskStorage.setItem('b', '2');
-		equal(localStorage.getItem('\u0001b'), '2');
+		equal(localStorage.getItem('b'), '2');
 
 		diskStorage.setItem('b', new String('2'));
-		equal(localStorage.getItem('\u0001b'), '2');
+		equal(localStorage.getItem('b'), '2');
 
 		diskStorage.setItem('b', 2);
-		equal(localStorage.getItem('\u0001b'), '\u00022');
+		equal(localStorage.getItem('b'), '\u00012');
 
 		diskStorage.setItem('c', [1,2,3]);
-		equal(localStorage.getItem('\u0001c'), '\u0002[1,2,3]');
+		equal(localStorage.getItem('c'), '\u0001[1,2,3]');
 
 		diskStorage.setItem('c', [1,2,3]);
 		deepEqual(diskStorage.getItem('c'), [1,2,3]);
@@ -43,18 +43,9 @@ if (diskStorage.isSupported()) {
 		diskStorage.setItem('d', {d:'dog'});
 		deepEqual(diskStorage.getItem('d'), {d:'dog'});
 
-		equal(diskStorage.length, 4);
+		equal(diskStorage.getLength(), 4);
 
 		strictEqual(diskStorage.getItem('invalid'), null);
-	});
-
-	test('diskStorage prefix', function() {
-		localStorage.setItem('a',100);
-		notEqual(localStorage.getItem('a'), diskStorage.getItem('a'));
-		localStorage.removeItem('a');
-
-		localStorage.setItem('e', 'eek');
-		strictEqual(diskStorage.getItem('e'), null);
 	});
 
 	test('diskStorage event subscription', 14, function() {
@@ -93,14 +84,14 @@ if (diskStorage.isSupported()) {
 
 	test('diskStorage.removeItem()', function() {
 		diskStorage.removeItem('d');
-		equal(diskStorage.length, 3);
+		equal(diskStorage.getLength(), 3);
 
 		strictEqual(diskStorage.getItem('d'), null);
 	});
 
 	test('diskStorage.clear()', function() {
 		diskStorage.clear();
-		strictEqual(diskStorage.length, 0);
+		strictEqual(diskStorage.getLength(), 0);
 
 		strictEqual(diskStorage.getItem('d'), null);
 	});
