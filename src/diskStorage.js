@@ -54,7 +54,7 @@
 		// if not a string, serialize to JSON
 		value = Object.prototype.toString.call(value) == '[object String]' ? value : '\u0001' + JSON.stringify(value);
 		// prefix with to avoid collisions with other libs
-		global.localStorage.setItem(key, value);
+		global.localStorage.setItem('\u0002' + key, value);
 		return this;
 	};
 
@@ -65,7 +65,7 @@
 	 * @return {Mixed}
 	 */
 	DiskStorage.prototype.getItem = function getItem(key) {
-		var value = global.localStorage.getItem(key, value);
+		var value = global.localStorage.getItem('\u0002' + key, value);
 		if (value && value.charAt(0) == '\u0001') {
 			// if prefixed with our special char, unserialize JSON
 			value = JSON.parse(value.slice(1));
@@ -84,7 +84,7 @@
 			oldValue = this.getItem(key);
 			this.notify(key, oldValue, undefined);
 		}
-		global.localStorage.removeItem(key);
+		global.localStorage.removeItem('\u0002' + key);
 		return this;
 	};
 
@@ -167,7 +167,7 @@
 	global.diskStorage.isSupported = function isSupported() {
 		// from http://diveintohtml5.org/storage.html
 		try {
-			return 'localStorage' in global && !!global.localStorage;
+			return 'localStorage' in global && !!global.localStorage && JSON && JSON.parse && JSON.stringify;
 		}
 		catch (e) {
 			return false;
