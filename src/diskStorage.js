@@ -33,6 +33,71 @@
 (function(global) {
 
 	/**
+	 * @var {String} PREFIX_KEY - Constant to use to distinguish other localStorage values from this one
+	 */
+	var PREFIX_KEY = '\u0001';
+
+	/**
+	 * @var {String} PREFIX_JSON - Constant to use to distinguish strings from JSON encoded strings
+	 */
+	var PREFIX_JSON = '\u0002';
+
+	/**
+	 * @var {Boolean} listening - Used to listen to storage event first time subscribe() is called
+	 */
+	var listening = false;
+
+	/**
+	 * Add event listener to window if not already
+	 *
+	 * @return {undefined}
+	 */
+	function listenOnce() {
+		if (listening) {
+			return;
+		}
+		listening = true;
+		global.addEventListener('storage', function(evt) {
+			if (evt.key.charAt(0) == PREFIX_KEY) {
+				global.diskStorage.notify({
+					key: evt.key.slice(1),
+					newValue: unpack(evt.newValue),
+					oldValue: unpack(evt.oldValue),
+					source: evt.source,
+					event: evt,
+					type: evt.type,
+					target: diskStorage,
+					url: evt.url || evt.uri
+				});
+			}
+		}, false);
+	}
+
+	/**
+	 * Serialize value as JSON unless it is a string already
+	 *
+	 * @param {Any} value - Incoming object or value
+	 * @return {String}
+	 */
+	function pack(value) {
+		// if not a string, serialize to JSON
+		return Object.prototype.toString.call(value) == '[object String]' ? value : JSON.stringify(value);
+	}
+
+	/**
+	 * Unserialize value if needed
+	 *
+	 * @param {Any} value - Incoming object or value
+	 * @return {String}
+	 */
+	function unpack(value) {
+		if (value && value.charAt(0) == PREFIX_JSON) {
+			// if prefixed with our special char, unserialize JSON
+			value = JSON.parse(value.slice(1));
+		}
+	}
+
+	/**
 	 * Initialize properties
 	 */
 	function DiskStorage() {
@@ -47,14 +112,8 @@
 	 * @return {this}
 	 */
 	DiskStorage.prototype.setItem = function setItem(key, value) {
-		if (this.subscribers.length > 0) {
-			oldValue = this.getItem(key);
-			this.notify(key, oldValue, value);
-		}
-		// if not a string, serialize to JSON
-		value = Object.prototype.toString.call(value) == '[object String]' ? value : '\u0001' + JSON.stringify(value);
-		// prefix with to avoid collisions with other libs
-		global.localStorage.setItem('\u0002' + key, value);
+		// prefix to avoid collisions with other libs
+		global.localStorage.setItem(PREFIX_KEY + key, pack(value));
 		return this;
 	};
 
@@ -65,12 +124,7 @@
 	 * @return {Mixed}
 	 */
 	DiskStorage.prototype.getItem = function getItem(key) {
-		var value = global.localStorage.getItem('\u0002' + key, value);
-		if (value && value.charAt(0) == '\u0001') {
-			// if prefixed with our special char, unserialize JSON
-			value = JSON.parse(value.slice(1));
-		}
-		return value;
+		return unpack(global.localStorage.getItem(PREFIX_KEY + key));
 	};
 
 	/**
@@ -80,11 +134,7 @@
 	 * @return {this}
 	 */
 	DiskStorage.prototype.removeItem = function removeItem(key) {
-		if (this.subscribers.length > 0) {
-			oldValue = this.getItem(key);
-			this.notify(key, oldValue, undefined);
-		}
-		global.localStorage.removeItem('\u0002' + key);
+		global.localStorage.removeItem(PREFIX_KEY + key);
 		return this;
 	};
 
@@ -94,7 +144,11 @@
 	 * @return {this}
 	 */
 	DiskStorage.prototype.clear = function clear() {
-		global.localStorage.clear();
+		this.forEach(function(value, key) {
+			if (key.charAt(0) == PREFIX_KEY) {
+				global.localStorage.removeItem(key);
+			}
+		});
 		return this;
 	};
 
@@ -104,6 +158,30 @@
 	 * @return {Number}
 	 */
 	DiskStorage.prototype.getLength = function getLength() {
+		var length = 0;
+		this.forEach(function(value, key) {
+			if (key.charAt(0) == PREFIX_KEY) {
+				length++;
+			}
+		});
+		return length;
+	};
+
+	/**
+	 * Iterate through the collection
+	 *
+	 * @return {Number}
+	 */
+	DiskStorage.prototype.forEach = function forEach(callback, context) {
+		context = context || window;
+		var key;
+		for (var i = 0, len = global.localStorage.length; i < len; i++) {
+			key = global.localStorage.key(i);
+			if (key.charAt(0) == PREFIX_KEY) {
+				key = key.slice(1);
+				callback.call(context, global.localStorage.getItem(key), key, this);
+			}
+		}
 		return global.localStorage.length;
 	};
 
@@ -122,6 +200,7 @@
 	 * @return {this}
 	 */
 	DiskStorage.prototype.subscribe = function subscribe(callback) {
+		listenOnce();
 		this.subscribers.push(callback);
 		return this;
 	};
@@ -148,10 +227,10 @@
 	/**
 	 * Generally private method to trigger all callbacks
 	 */
-	DiskStorage.prototype.notify = function notify(key, oldValue, newValue) {
+	DiskStorage.prototype.notify = function notify(evt) {
 		var i = 0, fn;
 		while ((fn = this.subscribers[i++])) {
-			fn({timestamp: +new Date, target: this, key: key, oldValue: oldValue, newValue: newValue, url: window.location.href});
+			fn(evt);
 		}
 		return this;
 	};

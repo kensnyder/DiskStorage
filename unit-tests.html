@@ -19,35 +19,39 @@
 <script type="text/javascript">
 
 if (diskStorage.isSupported()) {
-	diskStorage.clear();
+	localStorage.clear();
 
 	test('diskStorage.setItem() / diskStorage.getItem()', function() {
 		diskStorage.setItem('a', 'alpha');
-		equal(localStorage.getItem('\u0002' + 'a'), 'alpha');
+		equal(localStorage.getItem(localStorage.key(0)), 'alpha');
 
 		diskStorage.setItem('b', '2');
-		equal(localStorage.getItem('\u0002' + 'b'), '2');
+		equal(localStorage.getItem(localStorage.key(1)), '2');
+		strictEqual(diskStorage.getItem('b'), '2');
 
 		diskStorage.setItem('b', new String('2'));
-		equal(localStorage.getItem('\u0002' + 'b'), '2');
+		equal(localStorage.getItem(localStorage.key(1)), '2');
+		strictEqual(diskStorage.getItem('b'), '2');
 
 		diskStorage.setItem('b', 2);
-		equal(localStorage.getItem('\u0002' + 'b'), '\u00012');
+		equal(localStorage.getItem(localStorage.key(1)), '2');
+		strictEqual(diskStorage.getItem('b'), 2);
 
 		diskStorage.setItem('c', [1,2,3]);
-		equal(localStorage.getItem('\u0002' + 'c'), '\u0001[1,2,3]');
+		equal(localStorage.getItem(localStorage.key(2)), '[1,2,3]');
 
 		diskStorage.setItem('c', [1,2,3]);
-		deepEqual(diskStorage.getItem('c'), [1,2,3]);
+		deepEqual(localStorage.getItem(localStorage.key(2)), [1,2,3]);
 
 		diskStorage.setItem('d', {d:'dog'});
-		deepEqual(diskStorage.getItem('d'), {d:'dog'});
+		deepEqual(localStorage.getItem(localStorage.key(3)), {d:'dog'});
 
 		equal(diskStorage.getLength(), 4);
 
 		strictEqual(diskStorage.getItem('invalid'), null);
+		
 	});
-
+/*
 	test('diskStorage event subscription', 14, function() {
 		var i = 0;
 		function callback1(evt) {
@@ -95,6 +99,7 @@ if (diskStorage.isSupported()) {
 
 		strictEqual(diskStorage.getItem('d'), null);
 	});
+	*/
 }
 else {
 	alert('This browser does not support diskStorage because it doesn\'t support localStorage or JSON.');
