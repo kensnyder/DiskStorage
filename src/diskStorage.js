@@ -91,10 +91,8 @@
 	 * @return {String}
 	 */
 	function unpack(value) {
-		if (value && value.charAt(0) == PREFIX_JSON) {
 			// if prefixed with our special char, unserialize JSON
-			value = JSON.parse(value.slice(1));
-		}
+		return (value && value.charAt(0) == PREFIX_JSON ? JSON.parse(value.slice(1)) : value);
 	}
 
 	/**
