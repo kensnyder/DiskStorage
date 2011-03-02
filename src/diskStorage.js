@@ -91,7 +91,7 @@
 	 * @return {String}
 	 */
 	function unpack(value) {
-			// if prefixed with our special char, unserialize JSON
+		// if prefixed with our special char, unserialize JSON
 		return (value && value.charAt(0) == PREFIX_JSON ? JSON.parse(value.slice(1)) : value);
 	}
 
@@ -237,6 +237,8 @@
 	 * Create a single instance
 	 */
 	global.diskStorage = new DiskStorage;
+	global.diskStorage.PREFIX_KEY = PREFIX_KEY;
+	global.diskStorage.PREFIX_JSON = PREFIX_JSON;
 
 	/**
 	 * Return true if localStorage is available
