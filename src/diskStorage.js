@@ -157,11 +157,7 @@
 	 */
 	DiskStorage.prototype.getLength = function getLength() {
 		var length = 0;
-		this.forEach(function(value, key) {
-			if (key.charAt(0) == PREFIX_KEY) {
-				length++;
-			}
-		});
+		this.forEach(function() { length++ });
 		return length;
 	};
 
