@@ -14,6 +14,7 @@ module.exports = function(grunt) {
 					"laxbreak": true,
 					"browser": true,
 					"globals": {
+						"console": true,
 						"define": true
 					}
 				},
@@ -27,6 +28,12 @@ module.exports = function(grunt) {
 			dist: {
 				src: './src/diskStorage.js',
 				dest: './dist/diskStorage.min.js'
+			}
+		},
+		watch: {
+			scripts: {
+				files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.*'],
+				tasks: ['jshint', 'qunit']
 			}
 		}
 	});

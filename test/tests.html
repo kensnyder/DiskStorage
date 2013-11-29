@@ -1,110 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>diskStorage Unit Tests</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<script type="text/javascript" src="qunit/qunit.js"></script>
-	<script type="text/javascript" src="src/diskStorage.js"></script>
-	<link type="text/css" rel="stylesheet" href="qunit/qunit.css" media="screen" />
+	<title>DiskStorage Unit Tests</title>
+	<script src="./bindPolyfill.js"></script>
+	<script src="../src/DiskStorage.js"></script>
+	<script src="../node_modules/grunt-contrib-qunit/test/libs/qunit.js"></script>
+	<script src="./tests.js"></script>
+	<link type="text/css" rel="stylesheet" href="../node_modules/grunt-contrib-qunit/test/libs/qunit.css" />
 </head>
 <body>
 
-<div id="unit-output" style="width: 550px">
-	<h1 id="qunit-header">diskStorage Unit Tests</h1>
-	<h2 id="qunit-banner"></h2>
-	<h2 id="qunit-userAgent"></h2>
-	<ol id="qunit-tests"><li></li></ol>
-</div>
-
-<script type="text/javascript">
-
-if (diskStorage.isSupported()) {
-	localStorage.clear();
-
-	test('diskStorage.setItem() / diskStorage.getItem()', function() {
-		diskStorage.setItem('a', 'alpha');
-		equal(localStorage.getItem(localStorage.key(0)), 'alpha');
-
-		diskStorage.setItem('b', '2');
-		equal(localStorage.getItem(localStorage.key(1)), '2');
-		strictEqual(diskStorage.getItem('b'), '2');
-
-		diskStorage.setItem('b', new String('2'));
-		equal(localStorage.getItem(localStorage.key(1)), '2');
-		strictEqual(diskStorage.getItem('b'), '2');
-
-		diskStorage.setItem('b', 2);
-		equal(localStorage.getItem(localStorage.key(1)), '2');
-		strictEqual(diskStorage.getItem('b'), 2);
-
-		diskStorage.setItem('c', [1,2,3]);
-		equal(localStorage.getItem(localStorage.key(2)), '[1,2,3]');
-
-		diskStorage.setItem('c', [1,2,3]);
-		deepEqual(localStorage.getItem(localStorage.key(2)), [1,2,3]);
-
-		diskStorage.setItem('d', {d:'dog'});
-		deepEqual(localStorage.getItem(localStorage.key(3)), {d:'dog'});
-
-		equal(diskStorage.getLength(), 4);
-
-		strictEqual(diskStorage.getItem('invalid'), null);
-		
-	});
-/*
-	test('diskStorage event subscription', 14, function() {
-		var i = 0;
-		function callback1(evt) {
-			if (i == 0) {
-				strictEqual(evt.target, diskStorage);
-				strictEqual(evt.key, 'a');
-				strictEqual(evt.oldValue, 'alpha');
-				strictEqual(evt.newValue, 1);
-				i++;
-			}
-			else {
-				strictEqual(evt.target, diskStorage);
-				strictEqual(evt.key, 'a');
-				strictEqual(evt.oldValue, 1);
-				strictEqual(evt.newValue, "alpha");
-				strictEqual(i, 1);
-			}
-		}
-		function callback2(evt) {
-				strictEqual(evt.target, diskStorage);
-				strictEqual(evt.key, 'a');
-				strictEqual(evt.oldValue, 1);
-				strictEqual(evt.newValue, "alpha");
-				strictEqual(i, 1);
-		}
-		diskStorage.subscribe(callback1);
-		diskStorage.setItem('a', 1);
-
-		diskStorage.subscribe(callback2);
-		diskStorage.setItem('a', "alpha");
-
-		diskStorage.unsubscribe(callback1).unsubscribe();
-	});
-
-	test('diskStorage.removeItem()', function() {
-		diskStorage.removeItem('d');
-		equal(diskStorage.getLength(), 3);
-
-		strictEqual(diskStorage.getItem('d'), null);
-	});
-
-	test('diskStorage.clear()', function() {
-		diskStorage.clear();
-		strictEqual(diskStorage.getLength(), 0);
-
-		strictEqual(diskStorage.getItem('d'), null);
-	});
-	*/
-}
-else {
-	alert('This browser does not support diskStorage because it doesn\'t support localStorage or JSON.');
-}
-</script>
+<div id=qunit></div>
 
 </body>
 </html>

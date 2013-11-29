@@ -1,5 +1,6 @@
 /**
  * DiskStorage.js
+ * v. 2.0.0
  * Wrapper for localStorage that also stores non-string data by serializing via JSON
  * Copyright (c) 2013 Ken Snyder under the MIT license: http://www.opensource.org/licenses/mit-license.html
  *
@@ -30,9 +31,6 @@
 	
 	"use strict";
 	
-	// used to throttle flush to localStorage
-	var last;
-	
 	/**
 	 * Initialize new store
 	 * 
@@ -40,8 +38,10 @@
 	 * @constructor
 	 */
 	function DiskStorage(name) {
+		this.isDirty = false;
 		this.name = name || 'default';
-		this.data = {};
+		var data = global.localStorage.getItem('DiskStorage-'+this.name);
+		this.data = data ? JSON.parse(data) : {};
 		this.flush = this.flush.bind(this);
 	}
 	
@@ -51,12 +51,10 @@
 	 * @returns {DiskStorage}
 	 */
 	DiskStorage.prototype.flush = function flush() {
-		if (last == 'flush') {
-			// nothing changed since last flush
-			return this;
+		if (this.isDirty) {
+			global.localStorage.setItem('DiskStorage-'+this.name, JSON.stringify(this.data));
+			this.isDirty = false;
 		}
-		last = 'flush';
-		global.localStorage.setItem('DiskStorage-'+this.name, JSON.stringify(this.data));
 		return this;
 	};
 
@@ -68,9 +66,11 @@
 	 * @return {DiskStorage}
 	 */
 	DiskStorage.prototype.set = function set(key, value) {
-		last = 'set';
-		this.data[key] = value;			
-		setTimeout(this.flush, 0);
+		this.data[key] = value;
+		if (!this.isDirty) {
+			setTimeout(this.flush, 0);
+		}
+		this.isDirty = true;
 		return this;
 	};
 
@@ -91,9 +91,11 @@
 	 * @return {DiskStorage}
 	 */
 	DiskStorage.prototype.remove = function remove(key) {
-		last = 'remove';
 		delete this.data[key];
-		setTimeout(this.flush, 0);
+		if (!this.isDirty) {
+			setTimeout(this.flush, 0);
+		}
+		this.isDirty = true;
 		return this;
 	};
 
@@ -103,9 +105,11 @@
 	 * @return {DiskStorage}
 	 */
 	DiskStorage.prototype.clear = function clear() {
-		last = 'clear';
 		this.data = {};
-		setTimeout(this.flush, 0);
+		if (!this.isDirty) {
+			setTimeout(this.flush, 0);
+		}
+		this.isDirty = true;
 		return this;
 	};
 
@@ -124,8 +128,53 @@
 	 * @return {DiskStorage}
 	 */
 	DiskStorage.prototype.forEach = function forEach(callback, thisArg) {
-		Object.keys(this.data).forEach(callback, thisArg || this);
+		callback = callback.bind(thisArg || this);
+		for (var k in this.data) {
+			if (this.data.hasOwnProperty(k)) {
+				callback(this.data[k], k, this);
+			}
+		}
 		return this;
+	};
+	
+	/**
+	 * Return a copy of the data store
+	 *
+	 * @return {DiskStorage}
+	 */
+	DiskStorage.prototype.export = function xport() {
+		return Object.clone ? Object.clone(this.data) : JSON.parse(JSON.stringify(this.data));
+	};
+	
+	/**
+	 * Replace the internal data with the one given
+	 *
+	 * @param {Object} data  data to load
+	 * @return {DiskStorage}
+	 */
+	DiskStorage.prototype.load = function load(data) {
+		this.data = data;
+		if (!this.isDirty) {
+			setTimeout(this.flush, 0);
+		}
+		this.isDirty = true;		
+		return this;
+	};
+	
+	/**
+	 * Return a new DiskStorage object with the same keys and values
+	 *
+	 * @param {String}  new namespace
+	 * @return {DiskStorage}
+	 */
+	DiskStorage.prototype.clone = function clone(name) {
+		name = name || 'default';
+		if (name == this.name) {
+			throw new Error('DiskStorage: cannot clone to same namespace');
+		}
+		var cloned = new DiskStorage(name);
+		cloned.load(this.export());
+		return cloned;
 	};
 
 	/**
@@ -135,7 +184,7 @@
 		return 'localStorage' in global && 
 			!!global.localStorage && 
 			global.JSON && global.JSON.parse && global.JSON.stringify &&
-			Array.prototype.forEach &&
+			Function.prototype.bind &&
 			Object.keys;
 	};
 
