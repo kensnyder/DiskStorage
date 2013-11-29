@@ -45,142 +45,154 @@
 		this.flush = this.flush.bind(this);
 	}
 	
-	/**
-	 * Flush to disk (localStorage)
-	 * 
-	 * @returns {DiskStorage}
-	 */
-	DiskStorage.prototype.flush = function flush() {
-		if (this.isDirty) {
-			global.localStorage.setItem('DiskStorage-'+this.name, JSON.stringify(this.data));
-			this.isDirty = false;
-		}
-		return this;
-	};
-
-	/**
-	 * Store data for later retreival
-	 *
-	 * @param {String} key   The name of the value
-	 * @param {Any} value  The data to store
-	 * @return {DiskStorage}
-	 */
-	DiskStorage.prototype.set = function set(key, value) {
-		this.data[key] = value;
-		if (!this.isDirty) {
-			setTimeout(this.flush, 0);
-		}
-		this.isDirty = true;
-		return this;
-	};
-
-	/**
-	 * Get a previously stored value
-	 *
-	 * @param {String} key  The name of the value
-	 * @return {Any}
-	 */
-	DiskStorage.prototype.get = function get(key) {
-		return this.data[key];
-	};
-
-	/**
-	 * Unset a stored value
-	 *
-	 * @param {String} key  The name to unset
-	 * @return {DiskStorage}
-	 */
-	DiskStorage.prototype.remove = function remove(key) {
-		delete this.data[key];
-		if (!this.isDirty) {
-			setTimeout(this.flush, 0);
-		}
-		this.isDirty = true;
-		return this;
-	};
-
-	/**
-	 * Unset all values
-	 *
-	 * @return {DiskStorage}
-	 */
-	DiskStorage.prototype.clear = function clear() {
-		this.data = {};
-		if (!this.isDirty) {
-			setTimeout(this.flush, 0);
-		}
-		this.isDirty = true;
-		return this;
-	};
-
-	/**
-	 * Return the number of items in the collection
-	 *
-	 * @return {Number}
-	 */
-	DiskStorage.prototype.size = function size() {
-		return Object.keys(this.data).length;
-	};
-	
-	/**
-	 * Iterate through the collection
-	 *
-	 * @return {DiskStorage}
-	 */
-	DiskStorage.prototype.forEach = function forEach(callback, thisArg) {
-		callback = callback.bind(thisArg || this);
-		for (var k in this.data) {
-			if (this.data.hasOwnProperty(k)) {
-				callback(this.data[k], k, this);
+	DiskStorage.prototype = {
+		/**
+		 * Flush to disk (localStorage)
+		 * 
+		 * @method flush
+		 * @returns {DiskStorage}
+		 */
+		flush: function() {
+			if (this.isDirty) {
+				global.localStorage.setItem('DiskStorage-'+this.name, JSON.stringify(this.data));
+				this.isDirty = false;
 			}
+			return this;
+		},
+
+		/**
+		 * Store data for later retreival
+		 *
+		 * @method set
+		 * @param {String} key   The name of the value
+		 * @param {Any} value  The data to store
+		 * @return {DiskStorage}
+		 */
+		set: function(key, value) {
+			this.data[key] = value;
+			if (!this.isDirty) {
+				setTimeout(this.flush, 0);
+			}
+			this.isDirty = true;
+			return this;
+		},
+
+		/**
+		 * Get a previously stored value
+		 *
+		 * @method get
+		 * @param {String} key  The name of the value
+		 * @return {Any}
+		 */
+		get: function(key) {
+			return this.data[key];
+		},
+
+		/**
+		 * Unset a stored value
+		 *
+		 * @method remove
+		 * @param {String} key  The name to unset
+		 * @return {DiskStorage}
+		 */
+		remove: function(key) {
+			delete this.data[key];
+			if (!this.isDirty) {
+				setTimeout(this.flush, 0);
+			}
+			this.isDirty = true;
+			return this;
+		},
+
+		/**
+		 * Unset all values
+		 *
+		 * @method clear
+		 * @return {DiskStorage}
+		 */
+		clear: function() {
+			this.data = {};
+			if (!this.isDirty) {
+				setTimeout(this.flush, 0);
+			}
+			this.isDirty = true;
+			return this;
+		},
+
+		/**
+		 * Return the number of items in the collection
+		 *
+		 * @method size
+		 * @return {Number}
+		 */
+		size: function() {
+			return Object.keys(this.data).length;
+		},
+
+		/**
+		 * Iterate through the collection
+		 *
+		 * @method forEach
+		 * @return {DiskStorage}
+		 */
+		forEach: function(callback, thisArg) {
+			callback = callback.bind(thisArg || this);
+			for (var k in this.data) {
+				if (this.data.hasOwnProperty(k)) {
+					callback(this.data[k], k, this);
+				}
+			}
+			return this;
+		},
+
+		/**
+		 * Return a copy of the data store
+		 *
+		 * @method export
+		 * @return {DiskStorage}
+		 */
+		export: function() {
+			return Object.clone ? Object.clone(this.data) : JSON.parse(JSON.stringify(this.data));
+		},
+
+		/**
+		 * Replace the internal data with the one given
+		 *
+		 * @method load
+		 * @param {Object} data  data to load
+		 * @return {DiskStorage}
+		 */
+		load: function(data) {
+			this.data = data;
+			if (!this.isDirty) {
+				setTimeout(this.flush, 0);
+			}
+			this.isDirty = true;		
+			return this;
+		},
+
+		/**
+		 * Return a new DiskStorage object with the same keys and values
+		 *
+		 * @method clone
+		 * @param {String}  new namespace
+		 * @return {DiskStorage}
+		 */
+		clone: function(name) {
+			name = name || 'default';
+			if (name == this.name) {
+				throw new Error('DiskStorage: cannot clone to same namespace');
+			}
+			var cloned = new DiskStorage(name);
+			cloned.load(this.export());
+			return cloned;
 		}
-		return this;
-	};
-	
-	/**
-	 * Return a copy of the data store
-	 *
-	 * @return {DiskStorage}
-	 */
-	DiskStorage.prototype.export = function xport() {
-		return Object.clone ? Object.clone(this.data) : JSON.parse(JSON.stringify(this.data));
-	};
-	
-	/**
-	 * Replace the internal data with the one given
-	 *
-	 * @param {Object} data  data to load
-	 * @return {DiskStorage}
-	 */
-	DiskStorage.prototype.load = function load(data) {
-		this.data = data;
-		if (!this.isDirty) {
-			setTimeout(this.flush, 0);
-		}
-		this.isDirty = true;		
-		return this;
-	};
-	
-	/**
-	 * Return a new DiskStorage object with the same keys and values
-	 *
-	 * @param {String}  new namespace
-	 * @return {DiskStorage}
-	 */
-	DiskStorage.prototype.clone = function clone(name) {
-		name = name || 'default';
-		if (name == this.name) {
-			throw new Error('DiskStorage: cannot clone to same namespace');
-		}
-		var cloned = new DiskStorage(name);
-		cloned.load(this.export());
-		return cloned;
 	};
 
 	/**
-	 * Return true if localStorage is available
+	 * Return true if localStorage and JSON is available
 	 */
-	DiskStorage.isSupported = function isSupported() {
+	DiskStorage.isSupported = function() {
 		return 'localStorage' in global && 
 			!!global.localStorage && 
 			global.JSON && global.JSON.parse && global.JSON.stringify &&
