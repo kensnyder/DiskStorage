@@ -1,7 +1,7 @@
 /**
  * DiskStorage.js
  * v. 2.0.0
- * Wrapper for localStorage that also stores non-string data by serializing via JSON
+ * Wrapper for localStorage that sessionStorage that stores non-string data by serializing via JSON
  * Copyright (c) 2013 Ken Snyder under the MIT license: http://www.opensource.org/licenses/mit-license.html
  *
  * Supports IE9+, FF 3.5+, Safari 4+, Chrome 4.0+, Opera 10.50+, iPhone 2.0+, Android 2.0+
@@ -9,7 +9,7 @@
  * @usage
  * DiskStorage.isSupported(); // true
  * 
- * var store = new DiskStorage('mystore');
+ * var store = new DiskStorage('mystore','localStorage');
  * 
  * store.set("prop1", "myString");
  * store.get("prop1"); // "myString"
@@ -34,27 +34,31 @@
 	/**
 	 * Initialize new store
 	 * 
-	 * @param {String} [name]  The name of this store; defaults to 'default'
+	 * @param {String} [name]  The namespace for this store; defaults to 'default'
+	 * @param {String} [engine]  "localStorage" or "sessionStorage"; defaults to "localStorage"
 	 * @constructor
 	 */
-	function DiskStorage(name) {
+	function DiskStorage(name, engine) {
 		this.isDirty = false;
 		this.name = name || 'default';
-		var data = global.localStorage.getItem('DiskStorage-'+this.name);
+		this.engine = engine || 'localStorage';
+		var data = global[this.engine].getItem('DiskStorage-'+this.name);
 		this.data = data ? JSON.parse(data) : {};
 		this.flush = this.flush.bind(this);
 	}
 	
 	DiskStorage.prototype = {
+		
 		/**
-		 * Flush to disk (localStorage)
+		 * Flush to disk (localStorage or sessionStorage)
 		 * 
 		 * @method flush
 		 * @returns {DiskStorage}
+		 * @chainable
 		 */
 		flush: function() {
 			if (this.isDirty) {
-				global.localStorage.setItem('DiskStorage-'+this.name, JSON.stringify(this.data));
+				global[this.engine].setItem('DiskStorage-'+this.name, JSON.stringify(this.data));
 				this.isDirty = false;
 			}
 			return this;
@@ -67,6 +71,7 @@
 		 * @param {String} key   The name of the value
 		 * @param {Any} value  The data to store
 		 * @return {DiskStorage}
+		 * @chainable
 		 */
 		set: function(key, value) {
 			this.data[key] = value;
@@ -94,6 +99,7 @@
 		 * @method remove
 		 * @param {String} key  The name to unset
 		 * @return {DiskStorage}
+		 * @chainable
 		 */
 		remove: function(key) {
 			delete this.data[key];
@@ -109,6 +115,7 @@
 		 *
 		 * @method clear
 		 * @return {DiskStorage}
+		 * @chainable
 		 */
 		clear: function() {
 			this.data = {};
@@ -133,7 +140,10 @@
 		 * Iterate through the collection
 		 *
 		 * @method forEach
+		 * @param {Function} callback  The iterator function. Will receive three parameters: value, key, this DiskStorage instance
+		 * @param {Object} [thisArg]  The scope in which to execute the callback; defaults to this DiskStorage instance
 		 * @return {DiskStorage}
+		 * @chainable
 		 */
 		forEach: function(callback, thisArg) {
 			callback = callback.bind(thisArg || this);
@@ -161,6 +171,7 @@
 		 * @method load
 		 * @param {Object} data  data to load
 		 * @return {DiskStorage}
+		 * @chainable
 		 */
 		load: function(data) {
 			this.data = data;
@@ -175,27 +186,49 @@
 		 * Return a new DiskStorage object with the same keys and values
 		 *
 		 * @method clone
-		 * @param {String}  new namespace
+		 * @param {String} [name]  new namespace
+		 * @param {String} [engine]  "localStorage" or "sessionStorage"; defaults to "localStorage"
 		 * @return {DiskStorage}
 		 */
-		clone: function(name) {
+		clone: function(name, engine) {
 			name = name || 'default';
-			if (name == this.name) {
+			if (name == this.name && engine == this.engine) {
 				throw new Error('DiskStorage: cannot clone to same namespace');
 			}
-			var cloned = new DiskStorage(name);
+			var cloned = new DiskStorage(name, engine || this.engine);
 			cloned.load(this.export());
 			return cloned;
+		},
+
+		/**
+		 * entirely remove the data from localStorage or sessionStorage
+		 *
+		 * @method destroy
+		 * @return {DiskStorage}
+		 * @chainable
+		 */
+		destroy: function() {
+			global[this.engine].removeItem('DiskStorage-'+this.name);
+			this.data = {};
+			return this;
 		}
+		
+		
 	};
 
 	/**
-	 * Return true if localStorage and JSON is available
+	 * Return true if localStorage, sessionStorage and JSON are available
+	 * 
+	 * @method isSupported
+	 * @static
+	 * @return {Boolean}  True if browser will support DiskStorage
 	 */
 	DiskStorage.isSupported = function() {
 		return 'localStorage' in global && 
 			!!global.localStorage && 
-			global.JSON && global.JSON.parse && global.JSON.stringify &&
+			'sessionStorage' in global &&
+			!!global.sessionStorage &&
+			global.JSON && JSON.parse && JSON.stringify &&
 			Function.prototype.bind &&
 			Object.keys;
 	};
