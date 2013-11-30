@@ -15,6 +15,7 @@ module.exports = function(grunt) {
 					"browser": true,
 					"globals": {
 						"console": true,
+						"alert": true,
 						"define": true,
 						"escape": true,
 						"unescape": true,

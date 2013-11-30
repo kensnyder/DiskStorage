@@ -44,7 +44,7 @@
 		this.isDirty = false;
 		this.name = name || 'default';
 		this.engine = engine || 'localStorage';
-		var data = provider[this.engine].getItem('DiskStorage-'+this.name);
+		var data = provider[this.engine].getItem('DSto'+this.name);
 		this.data = data ? provider.JSON.parse(data) : {};
 		this.flush = this.flush.bind(this);
 	}
@@ -60,7 +60,7 @@
 		 */
 		flush: function() {
 			if (this.isDirty) {
-				provider[this.engine].setItem('DiskStorage-'+this.name, provider.JSON.stringify(this.data));
+				provider[this.engine].setItem('DSto'+this.name, provider.JSON.stringify(this.data));
 				this.isDirty = false;
 			}
 			return this;
@@ -210,7 +210,7 @@
 		 * @chainable
 		 */
 		destroy: function() {
-			provider[this.engine].removeItem('DiskStorage-'+this.name);
+			provider[this.engine].removeItem('DSto'+this.name);
 			this.data = {};
 			return this;
 		}
