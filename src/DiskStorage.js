@@ -135,7 +135,7 @@
 		 * @return {Number}
 		 */
 		size: function() {
-			return Object.keys(this.data).length;
+			return provider.Object.keys(this.data).length;
 		},
 
 		/**
@@ -160,10 +160,10 @@
 		/**
 		 * Return a copy of the data store
 		 *
-		 * @method export
+		 * @method exportData
 		 * @return {DiskStorage}
 		 */
-		export: function() {
+		exportData: function() {
 			return Object.clone ? Object.clone(this.data) : provider.JSON.parse(provider.JSON.stringify(this.data));
 		},
 
@@ -198,7 +198,7 @@
 				throw new Error('DiskStorage: cannot clone to same namespace');
 			}
 			var cloned = new DiskStorage(name, engine || this.engine);
-			cloned.load(this.export());
+			cloned.load(this.exportData());
 			return cloned;
 		},
 

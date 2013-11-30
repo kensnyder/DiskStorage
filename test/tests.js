@@ -73,7 +73,7 @@ function runTests(engine) {
 
 	});
 
-	test('export(), forEach()', function() {
+	test('exportData(), forEach()', function() {
 
 		var store = new DiskStorage('3', engine);
 		store.set('a', 1);
@@ -86,13 +86,13 @@ function runTests(engine) {
 
 		deepEqual(vals, {'a!':1,'b!':2}, 'using forEach');
 
-		var data = store.export();
-		deepEqual(data, {a:1,b:2}, 'export captures all data');
+		var data = store.exportData();
+		deepEqual(data, {a:1,b:2}, 'exportData captures all data');
 
 		data.c = 3;
 		deepEqual(data, {a:1,b:2,c:3});
 
-		deepEqual(store.export(), {a:1,b:2}, 'export does not export a reference');
+		deepEqual(store.exportData(), {a:1,b:2}, 'exportData does not export a reference');
 
 	});
 
@@ -103,14 +103,14 @@ function runTests(engine) {
 		store.set('b', 2);
 		store.flush();
 
-		deepEqual(store.export(), {a:1,b:2}, 'export captures all data');
+		deepEqual(store.exportData(), {a:1,b:2}, 'exportData captures all data');
 
 		var store2 = store.clone('4-copy');
 		deepEqual(store.engine, store2.engine, 'engine is the same');
 		
 		store2.flush();
 		
-		deepEqual(store2.export(), {a:1,b:2});
+		deepEqual(store2.exportData(), {a:1,b:2});
 
 		store.set('c', 1);
 
