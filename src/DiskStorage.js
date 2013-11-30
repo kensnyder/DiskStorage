@@ -27,7 +27,7 @@
  * store.size(); // 0
  *
  */
-(function(window) {
+(function(global) {
 	
 	"use strict";
 	
@@ -45,7 +45,7 @@
 		this.name = name || 'default';
 		this.engine = engine || 'localStorage';
 		var data = provider[this.engine].getItem('DiskStorage-'+this.name);
-		this.data = data ? JSON.parse(data) : {};
+		this.data = data ? provider.JSON.parse(data) : {};
 		this.flush = this.flush.bind(this);
 	}
 	
@@ -60,7 +60,7 @@
 		 */
 		flush: function() {
 			if (this.isDirty) {
-				provider[this.engine].setItem('DiskStorage-'+this.name, JSON.stringify(this.data));
+				provider[this.engine].setItem('DiskStorage-'+this.name, provider.JSON.stringify(this.data));
 				this.isDirty = false;
 			}
 			return this;
@@ -164,7 +164,7 @@
 		 * @return {DiskStorage}
 		 */
 		export: function() {
-			return Object.clone ? Object.clone(this.data) : JSON.parse(JSON.stringify(this.data));
+			return Object.clone ? Object.clone(this.data) : provider.JSON.parse(provider.JSON.stringify(this.data));
 		},
 
 		/**
@@ -226,11 +226,9 @@
 	 * @return {Boolean}  True if browser will support DiskStorage
 	 */
 	DiskStorage.isSupported = function() {
-		return 'localStorage' in provider && 
-			!!provider.localStorage && 
-			'sessionStorage' in provider &&
-			!!provider.sessionStorage &&
-			provider.JSON && JSON.parse && JSON.stringify &&
+		return provider.localStorage && 
+			provider.sessionStorage &&
+			provider.JSON && provider.JSON.parse && provider.JSON.stringify &&
 			Function.prototype.bind &&
 			provider.Object.keys;
 	};
@@ -238,12 +236,9 @@
 	// expose to window
 	global.DiskStorage = DiskStorage;
 	
+	// use shims if needed
 	if (!DiskStorage.isSupported()) {
-		provider = window.DiskStorageShims;
+		provider = global.DiskStorageShims;
 	}
 
 })(window);
-
-
-// ie8 has JSON and localstorage, needs Function.prototype.bind and Object.keys
-// ie6-8 needs all

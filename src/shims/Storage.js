@@ -2,7 +2,7 @@
 
 	"use strict";
 
-	if ('localsStorage' in global && !!global.localStorage) {
+	if (global.localStorage && global.sessionStorage) {
 		shims.localStorage = global.localStorage;
 		shims.sessionStorage = global.sessionStorage;
 		return;

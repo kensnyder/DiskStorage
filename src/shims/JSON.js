@@ -1,4 +1,4 @@
-(function(global) {
+(function(global, shims) {
 	
 	"use strict";
 	
@@ -15,13 +15,14 @@
 			}
 
 			function stringify (input) {
+				var res;
 				// Number or Boolean or Null
 				if (typeof input === 'number' || input === true || input === false || input === null) {
 					return ':' + input;
 				}
 				// Array
 				if (input instanceof Array) {
-					var res = [];
+					res = [];
 					for (var i = 0; i < input.length; ++i) {
 						res.push(stringify(input[i]));
 					}
@@ -29,7 +30,7 @@
 				}
 				// Object
 				if (typeof input === 'object') {
-					var res = [];
+					res = [];
 					for (var key in input) {
 						res.push(encodeString(key) + stringify(input[key]));
 					}
@@ -64,6 +65,7 @@
 			}
 
 			function parse() {
+				var res;
 				var type = str.charAt(pos++);
 
 				// String
@@ -84,15 +86,12 @@
 				}
 				// Array
 				if (type === '@') {
-					var res = [];
-					loop: {
-						if (pos >= str.length || str.charAt(pos) === ';') {
-							break loop;
-						}
+					res = [];
+					if (pos < str.length && str.charAt(pos) !== ';') {
 						while (1) {
 							res.push(parse());
 							if (pos >= str.length || str.charAt(pos) === ';') {
-								break loop;
+								break;
 							}
 							pos += 1;
 						}
@@ -102,16 +101,13 @@
 				}
 				// Object
 				if (type === '_') {
-					var res = {};
-					loop: {
-						if (pos >= str.length || str.charAt(pos) === ';') {
-							break loop;
-						}
+					res = {};
+					if (pos < str.length && str.charAt(pos) !== ';') {
 						while (1) {
 							var name = read();
 							res[name] = parse();
 							if (pos >= str.length || str.charAt(pos) === ';') {
-								break loop;
+								break;
 							}
 							pos += 1;
 						}

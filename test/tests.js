@@ -1,10 +1,12 @@
 if (!DiskStorage.isSupported()) {
-	console.error('This browser does not support diskStorage because it doesn\'t support localStorage or JSON.');
+	alert('This browser does not support DiskStorage, even after polyfills.');
 }
 
 function runTests(engine) {
 	
-	window[engine].clear();
+	var provider = DiskStorage.isSupported() ? window : window.DiskStorageShims;
+	
+	provider[engine].clear();
 	
 	module(engine);
 	
@@ -14,20 +16,20 @@ function runTests(engine) {
 
 		store.set('Number', 1);
 		store.flush();
-		strictEqual(window[engine].getItem('DiskStorage-0'), '{"Number":1}', 'storing a number');
+		strictEqual(provider[engine].getItem('DiskStorage-0'), '{"Number":1}', 'storing a number');
 		strictEqual(store.get('Number'), 1);
 
 		store.set('Boolean', true);
 		store.flush();
-		deepEqual(JSON.parse(window[engine].getItem('DiskStorage-0')), {"Number":1,"Boolean":true}, 'storing a boolean');
+		deepEqual(JSON.parse(provider[engine].getItem('DiskStorage-0')), {"Number":1,"Boolean":true}, 'storing a boolean');
 
 		store.set('Array', [1,2,3]);
 		store.flush();
-		deepEqual(JSON.parse(window[engine].getItem('DiskStorage-0')), {"Number":1,"Boolean":true,"Array":[1,2,3]}, 'storing an array');
+		deepEqual(JSON.parse(provider[engine].getItem('DiskStorage-0')), {"Number":1,"Boolean":true,"Array":[1,2,3]}, 'storing an array');
 
 		store.set('String', 'abc');
 		store.flush();
-		deepEqual(JSON.parse(window[engine].getItem('DiskStorage-0')), {"Number":1,"Boolean":true,"Array":[1,2,3],"String":"abc"}, 'storing a string');
+		deepEqual(JSON.parse(provider[engine].getItem('DiskStorage-0')), {"Number":1,"Boolean":true,"Array":[1,2,3],"String":"abc"}, 'storing a string');
 
 		strictEqual(store.size(), 4, 'size()');
 	});
@@ -49,10 +51,10 @@ function runTests(engine) {
 
 		store.set('null', null);
 		store.flush();
-		strictEqual(window[engine].getItem('DiskStorage-2'), '{"null":null}', 'storing null');
+		strictEqual(provider[engine].getItem('DiskStorage-2'), '{"null":null}', 'storing null');
 		store.remove('null');
 		store.flush();
-		strictEqual(window[engine].getItem('DiskStorage-2'), '{}', 'empty after removing item');
+		strictEqual(provider[engine].getItem('DiskStorage-2'), '{}', 'empty after removing item');
 
 	});
 
@@ -63,11 +65,11 @@ function runTests(engine) {
 		store.set('String', 'foo');
 		store.set('Object', {a:1});
 		store.flush();
-		deepEqual(JSON.parse(window[engine].getItem('DiskStorage-2')), {String:"foo",Object:{a:1}}, 'before clearing');
+		deepEqual(JSON.parse(provider[engine].getItem('DiskStorage-2')), {String:"foo",Object:{a:1}}, 'before clearing');
 
 		store.clear();
 		store.flush();
-		strictEqual(window[engine].getItem('DiskStorage-2'), '{}', 'after clearing');
+		strictEqual(provider[engine].getItem('DiskStorage-2'), '{}', 'after clearing');
 
 	});
 
@@ -122,7 +124,7 @@ function runTests(engine) {
 		var store = new DiskStorage('4', engine);
 		store.destroy();
 
-		strictEqual(window[engine].getItem('DiskStorage-4'), null, 'no trace of data');
+		strictEqual(provider[engine].getItem('DiskStorage-4'), null, 'no trace of data');
 
 	});
 
