@@ -1,11 +1,4 @@
-(function(global, shims) {
-	
-	"use strict";
-	
-	if (global.JSON && global.JSON.stringify && global.JSON.stringify) {
-		shims.JSON = global.JSON;
-		return;
-	}
+if (!global.JSON) {
 
 	// based on https://github.com/vjeux/URLON/
 	shims.JSON = {
@@ -123,4 +116,4 @@
 		}
 	};
 
-})(window, DiskStorageShims);
+}

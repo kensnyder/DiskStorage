@@ -20,6 +20,9 @@ module.exports = function(grunt) {
 						"escape": true,
 						"unescape": true,
 						"DiskStorageShims": true,
+						// for our shim templates to jshint, we add these two vars
+						"global": true,
+						"shims": true
 					}
 				},
 				src: ['src/**/*.js']
@@ -58,7 +61,7 @@ module.exports = function(grunt) {
 	
 	grunt.registerTask('build', function() {
 		// build versions and shims
-		var base = 'var DiskStorageShims = {};';
+		var tpl = grunt.file.read('src/shims/template.js');
 		// ie 8 needs Function.prototype.bind and Object.keys 
 		var ie8 = '';
 		ie8 += grunt.file.read('src/shims/Function.bind.js');
@@ -67,8 +70,8 @@ module.exports = function(grunt) {
 		var ie6and7 = '';
 		ie6and7 += grunt.file.read('src/shims/JSON.js');
 		ie6and7 += grunt.file.read('src/shims/Storage.js');		
-		grunt.file.write('dist/DiskStorage.shim-ie8.min.js', base + ie8);
-		grunt.file.write('dist/DiskStorage.shim-ie6-8.min.js', base + ie8 + ie6and7);
+		grunt.file.write('dist/DiskStorage.shim-ie8.min.js', tpl.replace('// SHIMS HERE', ie8));
+		grunt.file.write('dist/DiskStorage.shim-ie6-8.min.js', tpl.replace('// SHIMS HERE', ie8 + ie6and7));
 		grunt.task.run('uglify');
 	});
 

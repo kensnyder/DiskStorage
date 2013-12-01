@@ -51,10 +51,10 @@ function runTests(engine) {
 
 		store.set('null', null);
 		store.flush();
-		strictEqual(provider[engine].getItem('DSto2'), '{"null":null}', 'storing null');
+		deepEqual(provider.JSON.parse(provider[engine].getItem('DSto2')), {"null":null}, 'storing null');
 		store.remove('null');
 		store.flush();
-		strictEqual(provider[engine].getItem('DSto2'), '{}', 'empty after removing item');
+		deepEqual(provider.JSON.parse(provider[engine].getItem('DSto2')), {}, 'empty after removing item');
 
 	});
 
@@ -69,7 +69,7 @@ function runTests(engine) {
 
 		store.clear();
 		store.flush();
-		strictEqual(provider[engine].getItem('DSto2'), '{}', 'after clearing');
+		deepEqual(provider.JSON.parse(provider[engine].getItem('DSto2')), {}, 'after clearing');
 
 	});
 

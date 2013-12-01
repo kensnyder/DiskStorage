@@ -228,7 +228,7 @@
 	DiskStorage.isSupported = function() {
 		return provider.localStorage && 
 			provider.sessionStorage &&
-			provider.JSON && provider.JSON.parse && provider.JSON.stringify &&
+			provider.JSON &&
 			Function.prototype.bind &&
 			provider.Object.keys;
 	};
