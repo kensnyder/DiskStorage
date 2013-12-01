@@ -33,18 +33,18 @@ module.exports = function(grunt) {
 		},
 		uglify: {
 			dist: {
-				src: './src/diskStorage.js',
+				src:  './src/diskStorage.js',
 				dest: './dist/diskStorage.min.js'
 			},
 			shims: {
-				src: './dist/DiskStorage.shims.min.js',
+				src:  './dist/DiskStorage.shims.min.js',
 				dest: './dist/DiskStorage.shims.min.js'
 			}
 		},
 		watch: {
 			scripts: {
 				files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.*'],
-				tasks: ['jshint', 'build', 'qunit']
+				tasks: ['jshint', 'shims', 'qunit']
 			}
 		}
 	});
@@ -55,7 +55,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	
-	grunt.registerTask('build', function() {
+	grunt.registerTask('shims', function() {
 		// build file with shims for ie6-7
 		var tpl = grunt.file.read('src/shims/template.js');
 		var ie6and7 = '';
@@ -63,6 +63,10 @@ module.exports = function(grunt) {
 		ie6and7 += grunt.file.read('src/shims/JSON.js');
 		ie6and7 += grunt.file.read('src/shims/Storage.js');		
 		grunt.file.write('dist/DiskStorage.shims.min.js', tpl.replace('// SHIMS HERE', ie6and7));
+	});
+	
+	grunt.registerTask('build', function() {
+		grunt.task.run('shims');
 		grunt.task.run('uglify');
 	});
 
