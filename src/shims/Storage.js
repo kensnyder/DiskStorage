@@ -1,4 +1,4 @@
-if (!shims.localStorage) {
+if (!global.localStorage) {
 	
 	var MAX_COOKIE_LENGTH = 4096;
 	

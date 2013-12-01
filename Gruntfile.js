@@ -36,13 +36,9 @@ module.exports = function(grunt) {
 				src: './src/diskStorage.js',
 				dest: './dist/diskStorage.min.js'
 			},
-			ie8: {
-				src: './dist/DiskStorage.shim-ie8.min.js',
-				dest: './dist/DiskStorage.shim-ie8.min.js'
-			},
-			ie6to8: {
-				src: './dist/DiskStorage.shim-ie6-8.min.js',
-				dest: './dist/DiskStorage.shim-ie6-8.min.js'
+			shims: {
+				src: './dist/DiskStorage.shims.min.js',
+				dest: './dist/DiskStorage.shims.min.js'
 			}
 		},
 		watch: {
@@ -60,18 +56,13 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	
 	grunt.registerTask('build', function() {
-		// build versions and shims
+		// build file with shims for ie6-7
 		var tpl = grunt.file.read('src/shims/template.js');
-		// ie 8 needs Function.prototype.bind and Object.keys 
-		var ie8 = '';
-		ie8 += grunt.file.read('src/shims/Function.bind.js');
-		ie8 += grunt.file.read('src/shims/Object.keys.js');
-		// ie 6 and 7 also need JSON and localStorage/sessionStorage
 		var ie6and7 = '';
+		// ie 6 and 7 also need JSON and localStorage/sessionStorage
 		ie6and7 += grunt.file.read('src/shims/JSON.js');
 		ie6and7 += grunt.file.read('src/shims/Storage.js');		
-		grunt.file.write('dist/DiskStorage.shim-ie8.min.js', tpl.replace('// SHIMS HERE', ie8));
-		grunt.file.write('dist/DiskStorage.shim-ie6-8.min.js', tpl.replace('// SHIMS HERE', ie8 + ie6and7));
+		grunt.file.write('dist/DiskStorage.shims.min.js', tpl.replace('// SHIMS HERE', ie6and7));
 		grunt.task.run('uglify');
 	});
 

@@ -46,7 +46,8 @@
 		this.engine = engine || 'localStorage';
 		var data = provider[this.engine].getItem('DSto'+this.name);
 		this.data = data ? provider.JSON.parse(data) : {};
-		this.flush = this.flush.bind(this);
+		var self = this;
+		this._flush = function() { self.flush(); };
 	}
 	
 	DiskStorage.prototype = {
@@ -78,7 +79,7 @@
 		set: function(key, value) {
 			this.data[key] = value;
 			if (!this.isDirty) {
-				setTimeout(this.flush, 0);
+				setTimeout(this._flush, 0);
 			}
 			this.isDirty = true;
 			return this;
@@ -106,7 +107,7 @@
 		remove: function(key) {
 			delete this.data[key];
 			if (!this.isDirty) {
-				setTimeout(this.flush, 0);
+				setTimeout(this._flush, 0);
 			}
 			this.isDirty = true;
 			return this;
@@ -122,7 +123,7 @@
 		clear: function() {
 			this.data = {};
 			if (!this.isDirty) {
-				setTimeout(this.flush, 0);
+				setTimeout(this._flush, 0);
 			}
 			this.isDirty = true;
 			return this;
@@ -135,7 +136,13 @@
 		 * @return {Number}
 		 */
 		size: function() {
-			return provider.Object.keys(this.data).length;
+			var count = 0;
+			for (var k in this.data) {
+				if (this.data.hasOwnProperty(k)) {
+					count++;
+				}
+			}
+			return count;
 		},
 
 		/**
@@ -148,10 +155,9 @@
 		 * @chainable
 		 */
 		forEach: function(callback, thisArg) {
-			callback = callback.bind(thisArg || this);
 			for (var k in this.data) {
 				if (this.data.hasOwnProperty(k)) {
-					callback(this.data[k], k, this);
+					callback.call(thisArg || this, this.data[k], k, this);
 				}
 			}
 			return this;
@@ -178,7 +184,7 @@
 		load: function(data) {
 			this.data = data;
 			if (!this.isDirty) {
-				setTimeout(this.flush, 0);
+				setTimeout(this._flush, 0);
 			}
 			this.isDirty = true;		
 			return this;
@@ -228,15 +234,13 @@
 	DiskStorage.isSupported = function() {
 		return provider.localStorage && 
 			provider.sessionStorage &&
-			provider.JSON &&
-			Function.prototype.bind &&
-			provider.Object.keys;
+			provider.JSON;
 	};
 
 	// expose to window
 	global.DiskStorage = DiskStorage;
 	
-	// use shims if needed
+	// attempt to use shims if needed
 	if (!DiskStorage.isSupported()) {
 		provider = global.DiskStorageShims;
 	}
