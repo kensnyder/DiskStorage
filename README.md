@@ -3,7 +3,7 @@ DiskStorage
 
 Version 2.0.0, Dec 2013, MIT License
 
-[Download](https://github.com/kensnyder/DiskStorage/blob/master/dist/DiskStorage.min.js?raw=true), [Unit tests](http://sandbox.kendsnyder.com/DiskStorage/test/evergreen.html), [Online Documentation](http://sandbox.kendsnyder.com/DiskStorage/docs/)
+[Download](https://github.com/kensnyder/DiskStorage/blob/master/dist/DiskStorage.min.js?raw=true), [Unit tests](http://sandbox.kendsnyder.com/DiskStorage/test/evergreen.html), [Online Documentation](http://sandbox.kendsnyder.com/DiskStorage/docs/classes/DiskStorage.html)
 
 Features
 -
@@ -40,10 +40,10 @@ store.exportData(); // {"prop1":"myString","prop3":{"a":"alpha"}}
 Quick Documentation
 -
 
-For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder.com/DiskStorage/docs/)		
+For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder.com/DiskStorage/docs/classes/DiskStorage.html)		
 
 Instance Methods
--
+--
 
 <table>
 
@@ -150,7 +150,7 @@ Note that the object will flush to disk if any new values are added
 </table>
 
 Instance Properties
--
+--
 
 <table>
 	<tr>
