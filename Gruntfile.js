@@ -6,9 +6,9 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
 		pkg: pkg,
-		banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-		'<%= grunt.template.today("mmm yyyy") %>\n' +
-		'* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+		banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> -' +
+		' <%= grunt.template.today("mmm yyyy") %>, <%= pkg.homepage %>' +
+		' - Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
 		' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
 		jshint: {
 			src: {
@@ -39,6 +39,9 @@ module.exports = function(grunt) {
 			files: ['test/**/*.html']
 		},
 		uglify: {
+			options: {
+				banner: '<%= banner %>'
+			},
 			dist: {
 				src:  './src/diskStorage.js',
 				dest: './dist/diskStorage.min.js'
@@ -86,7 +89,7 @@ module.exports = function(grunt) {
 	});
 	
 	grunt.registerTask('logo', 'Copy logo to yuidoc files', function() {
-		grunt.file.copy('demos/assets/img/logo.png', 'docs/assets/css/logo.png');
+		grunt.file.copy('logo.png', 'docs/assets/css/logo.png');
 	});
 	
 	// custom tasks	
@@ -149,7 +152,7 @@ module.exports = function(grunt) {
 	});
 
 	// build steps
-	grunt.registerTask('build', ['shims','uglify','yuidoc','readme']);
+	grunt.registerTask('build', ['shims','uglify','yuidoc','logo','readme']);
 
 	// Default task.
 	grunt.registerTask('default', ['jshint', 'qunit', 'build']);
