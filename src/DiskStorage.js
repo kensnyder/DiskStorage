@@ -29,7 +29,7 @@
 	/**
 	 * The DiskStorage version
 	 * @attribute version
-	 * @type String
+	 * @type {String}
 	 * @static
 	 */
 	DiskStorage.version = '%VERSION%';

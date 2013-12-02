@@ -58,7 +58,7 @@
             "description": "The DiskStorage version",
             "itemtype": "attribute",
             "name": "version",
-            "type": "String",
+            "type": "{String}",
             "static": 1,
             "class": "DiskStorage"
         },
