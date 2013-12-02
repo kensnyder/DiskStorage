@@ -43,17 +43,17 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 ### Instance Methods
 
 <table>
+<tr>
+	<th align="left">Signature</th>
+	<th align="left">Returns</th>
+	<th align="left">Description</th>
+</tr>
 
 <tr>
-	<tr>
-		<th>Signature</th>
-		<th>Returns</th>
-		<th>Description</th>
-	<tr>
 	<td>
 		<strong>get</strong>(key)
 		<br />
-		<strong>@param</strong> {String} key The name of the value
+		{String} key The name of the value<br />
 	</td>
 	<td>
 		{Any} 
@@ -64,11 +64,6 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 </tr>
 
 <tr>
-	<tr>
-		<th>Signature</th>
-		<th>Returns</th>
-		<th>Description</th>
-	<tr>
 	<td>
 		<strong>flush</strong>()
 		<br />
@@ -83,15 +78,10 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 </tr>
 
 <tr>
-	<tr>
-		<th>Signature</th>
-		<th>Returns</th>
-		<th>Description</th>
-	<tr>
 	<td>
 		<strong>set</strong>(key, value)
 		<br />
-		<strong>@param</strong> {String} key The name of the value<strong>@param</strong> {Any} value The data to store
+		{String} key The name of the value<br />{Any} value The data to store<br />
 	</td>
 	<td>
 		{DiskStorage} 
@@ -102,15 +92,10 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 </tr>
 
 <tr>
-	<tr>
-		<th>Signature</th>
-		<th>Returns</th>
-		<th>Description</th>
-	<tr>
 	<td>
 		<strong>remove</strong>(key)
 		<br />
-		<strong>@param</strong> {String} key The name to unset
+		{String} key The name to unset<br />
 	</td>
 	<td>
 		{DiskStorage} 
@@ -121,11 +106,6 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 </tr>
 
 <tr>
-	<tr>
-		<th>Signature</th>
-		<th>Returns</th>
-		<th>Description</th>
-	<tr>
 	<td>
 		<strong>clear</strong>()
 		<br />
@@ -140,15 +120,10 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 </tr>
 
 <tr>
-	<tr>
-		<th>Signature</th>
-		<th>Returns</th>
-		<th>Description</th>
-	<tr>
 	<td>
 		<strong>forEach</strong>(callback[, thisArg])
 		<br />
-		<strong>@param</strong> {Function} callback The iterator function. Will receive three parameters: value, key, this DiskStorage instance<strong>@param</strong> {Object} [thisArg] The scope in which to execute the callback; defaults to this DiskStorage instance
+		{Function} callback The iterator function. Will receive three parameters: value, key, this DiskStorage instance<br />{Object} [thisArg] The scope in which to execute the callback; defaults to this DiskStorage instance<br />
 	</td>
 	<td>
 		{DiskStorage} 
@@ -159,11 +134,6 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 </tr>
 
 <tr>
-	<tr>
-		<th>Signature</th>
-		<th>Returns</th>
-		<th>Description</th>
-	<tr>
 	<td>
 		<strong>exportData</strong>()
 		<br />
@@ -178,15 +148,10 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 </tr>
 
 <tr>
-	<tr>
-		<th>Signature</th>
-		<th>Returns</th>
-		<th>Description</th>
-	<tr>
 	<td>
 		<strong>load</strong>(data)
 		<br />
-		<strong>@param</strong> {Object} data data to load
+		{Object} data data to load<br />
 	</td>
 	<td>
 		{DiskStorage} 
@@ -197,15 +162,10 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 </tr>
 
 <tr>
-	<tr>
-		<th>Signature</th>
-		<th>Returns</th>
-		<th>Description</th>
-	<tr>
 	<td>
 		<strong>clone</strong>([name][, engine])
 		<br />
-		<strong>@param</strong> {String} [name] new namespace; defaults to &quot;default&quot;<strong>@param</strong> {String} [engine] &quot;localStorage&quot; or &quot;sessionStorage&quot;; defaults to the current instance&#x27;s engine
+		{String} [name] new namespace; defaults to &quot;default&quot;<br />{String} [engine] &quot;localStorage&quot; or &quot;sessionStorage&quot;; defaults to the current instance&#x27;s engine<br />
 	</td>
 	<td>
 		{DiskStorage} 
@@ -216,11 +176,6 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 </tr>
 
 <tr>
-	<tr>
-		<th>Signature</th>
-		<th>Returns</th>
-		<th>Description</th>
-	<tr>
 	<td>
 		<strong>destroy</strong>()
 		<br />
@@ -236,11 +191,6 @@ Note that the object will flush to disk if any new values are added
 </tr>
 
 <tr>
-	<tr>
-		<th>Signature</th>
-		<th>Returns</th>
-		<th>Description</th>
-	<tr>
 	<td>
 		<strong>isSupported</strong>()
 		<br />

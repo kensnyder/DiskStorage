@@ -43,17 +43,17 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 ### Instance Methods
 
 <table>
+<tr>
+	<th align="left">Signature</th>
+	<th align="left">Returns</th>
+	<th align="left">Description</th>
+</tr>
 <% _.forEach(methods, function(method) { %>
 <tr>
-	<tr>
-		<th>Signature</th>
-		<th>Returns</th>
-		<th>Description</th>
-	<tr>
 	<td>
 		<strong><%- method.name %></strong>(<% _.forEach(method.params || [], function(param, i) { %><% if (param.optional) { %>[<% } %><% if (i !== 0) { %>, <% } %><%- param.name %><% if (param.optdefault !== undefined) { %>=<%- param.optdefault %><% } %><% if (param.optional) { %>]<% } %><% }); %>)
 		<br />
-		<% _.forEach(method.params || [], function(param, i) { %><strong>@param</strong> {<%- (param.type || '') %>} <% if (param.optional) { %>[<% } %><%- param.name %><% if (param.optdefault !== undefined) { %>=<%- param.optdefault %><% } %><% if (param.optional) { %>]<% } %> <%- param.description %><% }); %>
+		<% _.forEach(method.params || [], function(param, i) { %>{<%- (param.type || '') %>} <% if (param.optional) { %>[<% } %><%- param.name %><% if (param.optdefault !== undefined) { %>=<%- param.optdefault %><% } %><% if (param.optional) { %>]<% } %> <%- param.description %><br /><% }); %>
 	</td>
 	<td>
 		<% if (method.return) { %>{<%- (method.return.type || '') %>} <%- method.return.description %><% } else { %>{undefined}<% } %>
