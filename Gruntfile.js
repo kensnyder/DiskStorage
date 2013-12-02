@@ -104,7 +104,7 @@ module.exports = function(grunt) {
 			options: []
 		};
 		docs.constructor = data.classes.DiskStorage;
-		data.classitems.sort(alphabetic).forEach(function(item) {
+		data.classitems.forEach(function(item) {
 			if (item.itemtype == 'property' && item.name == 'options') {
 				docs.options = item.subprops;
 			}
@@ -125,15 +125,6 @@ module.exports = function(grunt) {
 		var docStr = JSON.stringify(docs).replace(/\{\{.+?\}\}(.+?)\{\{.+?\}\}/g, '$1');
 		docs = JSON.parse(docStr);
 		return docs;
-	}
-	
-	function alphabetic(a, b) {
-		if (!a.name || !b.name) {
-			return 0;
-		}
-		var nameA = a.name.substring(0,1) == '_' ? 'zzz' + a.name : a.name;
-		var nameB = b.name.substring(0,1) == '_' ? 'zzz' + b.name : b.name;
-		return nameA == nameB ? 0 : (nameA > nameB ? 1 : -1);
 	}
 	
 	grunt.registerTask('readme', 'Compile the README based on source documentation', function() {

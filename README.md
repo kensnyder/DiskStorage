@@ -51,34 +51,6 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 
 <tr>
 	<td>
-		<strong>get</strong>(key)
-		<br />
-		{String} key The name of the value<br />
-	</td>
-	<td>
-		{Any} 
-	</td>
-	<td>
-		Get a previously stored value
-	</td>
-</tr>
-
-<tr>
-	<td>
-		<strong>flush</strong>()
-		<br />
-		
-	</td>
-	<td>
-		{DiskStorage} 
-	</td>
-	<td>
-		Flush to disk (localStorage or sessionStorage)
-	</td>
-</tr>
-
-<tr>
-	<td>
 		<strong>set</strong>(key, value)
 		<br />
 		{String} key The name of the value<br />{Any} value The data to store<br />
@@ -88,6 +60,20 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 	</td>
 	<td>
 		Store data for later retreival
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<strong>get</strong>(key)
+		<br />
+		{String} key The name of the value<br />
+	</td>
+	<td>
+		{Any} 
+	</td>
+	<td>
+		Get a previously stored value
 	</td>
 </tr>
 
@@ -116,6 +102,21 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 	</td>
 	<td>
 		Unset all values
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<strong>flush</strong>()
+		<br />
+		
+	</td>
+	<td>
+		{DiskStorage} 
+	</td>
+	<td>
+		Flush to disk (localStorage or sessionStorage).
+Is triggered automatically on the next event loop when data changes
 	</td>
 </tr>
 

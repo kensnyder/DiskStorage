@@ -57,21 +57,6 @@
 	DiskStorage.prototype = {
 		
 		/**
-		 * Flush to disk (localStorage or sessionStorage)
-		 * 
-		 * @method flush
-		 * @returns {DiskStorage}
-		 * @chainable
-		 */
-		flush: function() {
-			if (this.isDirty) {
-				provider[this.engine].setItem('DSto'+this.name, provider.JSON.stringify(this.data));
-				this.isDirty = false;
-			}
-			return this;
-		},
-
-		/**
 		 * Store data for later retreival
 		 *
 		 * @method set
@@ -132,6 +117,22 @@
 			this.isDirty = true;
 			return this;
 		},
+		
+		/**
+		 * Flush to disk (localStorage or sessionStorage).
+		 * Is triggered automatically on the next event loop when data changes
+		 * 
+		 * @method flush
+		 * @returns {DiskStorage}
+		 * @chainable
+		 */
+		flush: function() {
+			if (this.isDirty) {
+				provider[this.engine].setItem('DSto'+this.name, provider.JSON.stringify(this.data));
+				this.isDirty = false;
+			}
+			return this;
+		},		
 
 		/**
 		 * Iterate through the collection
@@ -209,7 +210,6 @@
 			this.data = {};
 			return this;
 		}
-		
 		
 	};
 
