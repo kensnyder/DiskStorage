@@ -1,6 +1,20 @@
 {
   "name": "DiskStorage",
+  "description": "Wrapper for localStorage that sessionStorage that stores non-string data by serializing via JSON",
+  "keywords": ["localStorage","sessionStorage","Storage","cookies","data","datastore"],
   "version": "2.0.0",
+  "author": {
+    "name": "Ken Snyder",
+    "email": "kendsnyder@gmail.com",
+    "url": "http://kendsnyder.com"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/kensnyder/jQuery-Suggester/blob/master/License"
+    }
+  ],
+  "homepage": "https://github.com/kensnyder/DiskStorage",
   "engines": {
     "node": ">= 0.8.0"
   },
@@ -12,6 +26,7 @@
     "grunt-contrib-uglify": "~0.2.7",
     "grunt-contrib-qunit": "~0.3.0",
     "grunt-contrib-jshint": "~0.7.2",
-    "grunt-contrib-watch": "~0.5.3"
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-yuidoc": "~0.5.0"
   }
 }

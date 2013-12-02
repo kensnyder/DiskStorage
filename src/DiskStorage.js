@@ -1,36 +1,12 @@
 /**
- * DiskStorage.js
- * v. 2.0.0
- * Wrapper for localStorage that sessionStorage that stores non-string data by serializing via JSON
- * Copyright (c) 2013 Ken Snyder under the MIT license: http://www.opensource.org/licenses/mit-license.html
- *
- * Supports IE9+, FF 3.5+, Safari 4+, Chrome 4.0+, Opera 10.50+, iPhone 2.0+, Android 2.0+
- *
- * @usage
- * DiskStorage.isSupported(); // true
- * 
- * var store = new DiskStorage('mystore','localStorage');
- * 
- * store.set("prop1", "myString");
- * store.get("prop1"); // "myString"
- *
- * store.set("prop2", 5);
- * store.get("prop2"); // 5
- *
- * store.set("prop3", {a: "alpha"});
- * store.get("prop3"); // {a: "alpha"}
- *
- * store.remove("prop3");
- * store.size(); // 2
- *
- * store.clear();
- * store.size(); // 0
- *
+ * @class DiskStorage
  */
 (function(global) {
 	
 	"use strict";
 	
+	// provider is the object that provides localStorage, sessionStorage, and JSON
+	// It is window for IE8+; otherwise it is window.DiskStorageShims
 	var provider = global;
 	
 	/**
@@ -50,6 +26,26 @@
 		this._flush = function() { self.flush(); };
 	}
 	
+	/**
+	 * The DiskStorage version
+	 * @attribute version
+	 * @type String
+	 * @static
+	 */
+	DiskStorage.version = '%VERSION%';
+		
+	/**
+	 * @property {Boolean} isDirty  True if flush should write to disk
+	 */
+	/**
+	 * @property {String} name  The namespace of the store
+	 */
+	/**
+	 * @property {String} engine  "localStorage" or "sessionStorage"
+	 */
+	/**
+	 * @property {Object} data  The data
+	 */
 	DiskStorage.prototype = {
 		
 		/**
@@ -130,22 +126,6 @@
 		},
 
 		/**
-		 * Return the number of items in the collection
-		 *
-		 * @method size
-		 * @return {Number}
-		 */
-		size: function() {
-			var count = 0;
-			for (var k in this.data) {
-				if (this.data.hasOwnProperty(k)) {
-					count++;
-				}
-			}
-			return count;
-		},
-
-		/**
 		 * Iterate through the collection
 		 *
 		 * @method forEach
@@ -194,8 +174,8 @@
 		 * Return a new DiskStorage object with the same keys and values
 		 *
 		 * @method clone
-		 * @param {String} [name]  new namespace
-		 * @param {String} [engine]  "localStorage" or "sessionStorage"; defaults to "localStorage"
+		 * @param {String} [name]  new namespace; defaults to "default"
+		 * @param {String} [engine]  "localStorage" or "sessionStorage"; defaults to the current instance's engine
 		 * @return {DiskStorage}
 		 */
 		clone: function(name, engine) {
@@ -209,7 +189,8 @@
 		},
 
 		/**
-		 * entirely remove the data from localStorage or sessionStorage
+		 * Clear the data and remove the DiskStorage data from localStorage/sessionStorage
+		 * Note that the object will flush to disk if any new values are added
 		 *
 		 * @method destroy
 		 * @return {DiskStorage}

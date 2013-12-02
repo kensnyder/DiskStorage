@@ -1,0 +1,308 @@
+{
+    "project": {
+        "name": "DiskStorage",
+        "description": "Wrapper for localStorage that sessionStorage that stores non-string data by serializing via JSON",
+        "version": "2.0.0",
+        "url": "https://github.com/kensnyder/DiskStorage"
+    },
+    "files": {
+        "src/DiskStorage.js": {
+            "name": "src/DiskStorage.js",
+            "modules": {},
+            "classes": {
+                "DiskStorage": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "DiskStorage": {
+            "name": "DiskStorage",
+            "shortname": "DiskStorage",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/DiskStorage.js",
+            "line": 1
+        }
+    },
+    "classitems": [
+        {
+            "file": "src/DiskStorage.js",
+            "line": 12,
+            "description": "Initialize new store",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The namespace for this store; defaults to 'default'",
+                    "type": "String",
+                    "optional": true
+                },
+                {
+                    "name": "engine",
+                    "description": "\"localStorage\" or \"sessionStorage\"; defaults to \"localStorage\"",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "is_constructor": 1,
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 29,
+            "description": "The DiskStorage version",
+            "itemtype": "attribute",
+            "name": "version",
+            "type": "String",
+            "static": 1,
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 37,
+            "itemtype": "property",
+            "name": "isDirty  True if flush should write to disk",
+            "type": "Boolean",
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 40,
+            "itemtype": "property",
+            "name": "name  The namespace of the store",
+            "type": "String",
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 43,
+            "itemtype": "property",
+            "name": "engine  \"localStorage\" or \"sessionStorage\"",
+            "type": "String",
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 46,
+            "itemtype": "property",
+            "name": "data  The data",
+            "type": "Object",
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 51,
+            "description": "Flush to disk (localStorage or sessionStorage)",
+            "itemtype": "method",
+            "name": "flush",
+            "return": {
+                "description": "",
+                "type": "DiskStorage"
+            },
+            "chainable": 1,
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 66,
+            "description": "Store data for later retreival",
+            "itemtype": "method",
+            "name": "set",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "The name of the value",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "The data to store",
+                    "type": "Any"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "DiskStorage"
+            },
+            "chainable": 1,
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 84,
+            "description": "Get a previously stored value",
+            "itemtype": "method",
+            "name": "get",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "The name of the value",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 95,
+            "description": "Unset a stored value",
+            "itemtype": "method",
+            "name": "remove",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "The name to unset",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "DiskStorage"
+            },
+            "chainable": 1,
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 112,
+            "description": "Unset all values",
+            "itemtype": "method",
+            "name": "clear",
+            "return": {
+                "description": "",
+                "type": "DiskStorage"
+            },
+            "chainable": 1,
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 128,
+            "description": "Iterate through the collection",
+            "itemtype": "method",
+            "name": "forEach",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "The iterator function. Will receive three parameters: value, key, this DiskStorage instance",
+                    "type": "Function"
+                },
+                {
+                    "name": "thisArg",
+                    "description": "The scope in which to execute the callback; defaults to this DiskStorage instance",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "DiskStorage"
+            },
+            "chainable": 1,
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 146,
+            "description": "Return a copy of the data store",
+            "itemtype": "method",
+            "name": "exportData",
+            "return": {
+                "description": "",
+                "type": "DiskStorage"
+            },
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 156,
+            "description": "Replace the internal data with the one given",
+            "itemtype": "method",
+            "name": "load",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "data to load",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "DiskStorage"
+            },
+            "chainable": 1,
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 173,
+            "description": "Return a new DiskStorage object with the same keys and values",
+            "itemtype": "method",
+            "name": "clone",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "new namespace; defaults to \"default\"",
+                    "type": "String",
+                    "optional": true
+                },
+                {
+                    "name": "engine",
+                    "description": "\"localStorage\" or \"sessionStorage\"; defaults to the current instance's engine",
+                    "type": "String",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "DiskStorage"
+            },
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 191,
+            "description": "Clear the data and remove the DiskStorage data from localStorage/sessionStorage\nNote that the object will flush to disk if any new values are added",
+            "itemtype": "method",
+            "name": "destroy",
+            "return": {
+                "description": "",
+                "type": "DiskStorage"
+            },
+            "chainable": 1,
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 208,
+            "description": "Return true if localStorage, sessionStorage and JSON are available",
+            "itemtype": "method",
+            "name": "isSupported",
+            "static": 1,
+            "return": {
+                "description": "True if browser will support DiskStorage",
+                "type": "Boolean"
+            },
+            "class": "DiskStorage"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/DiskStorage.js:51"
+        },
+        {
+            "message": "Missing item type\nInitialize new store",
+            "line": " src/DiskStorage.js:12"
+        }
+    ]
+}
