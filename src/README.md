@@ -83,27 +83,3 @@ Changelog
 
 **Version 1.0, 2012**
 * Initial version
-
-
-Contributing
--
-
-After using git to clone the repo, you'll need nodejs, npm, and grunt-cli installed. See [gruntjs.com](http://gruntjs.com/getting-started) for more information. Then inside the cloned directory run `npm install` and then `grunt`
-
-Make updates only to the files in the `./src` directory. Then run `grunt` to automatically generate documentation and other files. You may also make changes to the demos by editing `./demos/*` files or improve the build process by editing `./Gruntfile.js`. Then make a pull request.
-
-
-Reporting Bugs
--
-
-To report bugs, add an issue to the [GitHub issue tracker](https://github.com/kensnyder/jQuery-Suggester/issues).
-
-
-License
--
-
-Copyright 2012-2013, Ken Snyder
-
-[MIT License](http://www.opensource.org/licenses/mit-license.php)
-
-Inspired by the AutoSuggest plugin by Drew Wilson

@@ -35,16 +35,24 @@
 	DiskStorage.version = '%VERSION%';
 		
 	/**
-	 * @property {Boolean} isDirty  True if flush should write to disk
+	 * True if flush should write to disk
+	 * @property isDirty  
+	 * @type {Boolean}
 	 */
 	/**
-	 * @property {String} name  The namespace of the store
+	 * The namespace of the store
+	 * @property name
+	 * @type {String}  
 	 */
 	/**
-	 * @property {String} engine  "localStorage" or "sessionStorage"
+	 * "localStorage" or "sessionStorage"
+	 * @property engine
+	 * @type {String}
 	 */
 	/**
-	 * @property {Object} data  The data
+	 * The data
+	 * @property data
+	 * @type {Object}
 	 */
 	DiskStorage.prototype = {
 		

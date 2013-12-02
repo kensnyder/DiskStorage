@@ -65,38 +65,42 @@
         {
             "file": "src/DiskStorage.js",
             "line": 37,
+            "description": "True if flush should write to disk",
             "itemtype": "property",
-            "name": "isDirty  True if flush should write to disk",
-            "type": "Boolean",
+            "name": "isDirty",
+            "type": "{Boolean}",
             "class": "DiskStorage"
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 40,
+            "line": 42,
+            "description": "The namespace of the store",
             "itemtype": "property",
-            "name": "name  The namespace of the store",
-            "type": "String",
+            "name": "name",
+            "type": "{String}",
             "class": "DiskStorage"
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 43,
+            "line": 47,
+            "description": "\"localStorage\" or \"sessionStorage\"",
             "itemtype": "property",
-            "name": "engine  \"localStorage\" or \"sessionStorage\"",
-            "type": "String",
+            "name": "engine",
+            "type": "{String}",
             "class": "DiskStorage"
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 46,
+            "line": 52,
+            "description": "The data",
             "itemtype": "property",
-            "name": "data  The data",
-            "type": "Object",
+            "name": "data",
+            "type": "{Object}",
             "class": "DiskStorage"
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 51,
+            "line": 59,
             "description": "Flush to disk (localStorage or sessionStorage)",
             "itemtype": "method",
             "name": "flush",
@@ -109,7 +113,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 66,
+            "line": 74,
             "description": "Store data for later retreival",
             "itemtype": "method",
             "name": "set",
@@ -134,7 +138,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 84,
+            "line": 92,
             "description": "Get a previously stored value",
             "itemtype": "method",
             "name": "get",
@@ -153,7 +157,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 95,
+            "line": 103,
             "description": "Unset a stored value",
             "itemtype": "method",
             "name": "remove",
@@ -173,7 +177,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 112,
+            "line": 120,
             "description": "Unset all values",
             "itemtype": "method",
             "name": "clear",
@@ -186,7 +190,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 128,
+            "line": 136,
             "description": "Iterate through the collection",
             "itemtype": "method",
             "name": "forEach",
@@ -212,7 +216,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 146,
+            "line": 154,
             "description": "Return a copy of the data store",
             "itemtype": "method",
             "name": "exportData",
@@ -224,7 +228,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 156,
+            "line": 164,
             "description": "Replace the internal data with the one given",
             "itemtype": "method",
             "name": "load",
@@ -244,7 +248,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 173,
+            "line": 181,
             "description": "Return a new DiskStorage object with the same keys and values",
             "itemtype": "method",
             "name": "clone",
@@ -270,7 +274,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 191,
+            "line": 199,
             "description": "Clear the data and remove the DiskStorage data from localStorage/sessionStorage\nNote that the object will flush to disk if any new values are added",
             "itemtype": "method",
             "name": "destroy",
@@ -283,7 +287,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 208,
+            "line": 216,
             "description": "Return true if localStorage, sessionStorage and JSON are available",
             "itemtype": "method",
             "name": "isSupported",
@@ -298,7 +302,7 @@
     "warnings": [
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/DiskStorage.js:51"
+            "line": " src/DiskStorage.js:59"
         },
         {
             "message": "Missing item type\nInitialize new store",
