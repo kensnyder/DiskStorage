@@ -26,7 +26,6 @@ module.exports = function(grunt) {
 						"define": true,
 						"escape": true,
 						"unescape": true,
-						"DiskStorageShims": true,
 						// for our shim templates to jshint, we add these two vars
 						"global": true,
 						"shims": true
@@ -46,10 +45,6 @@ module.exports = function(grunt) {
 			dist: {
 				src:  './src/diskStorage.js',
 				dest: './dist/diskStorage.min.js'
-			},
-			shims: {
-				src:  './dist/DiskStorage.shims.min.js',
-				dest: './dist/DiskStorage.shims.min.js'
 			}
 		},
 		yuidoc: {
@@ -67,7 +62,7 @@ module.exports = function(grunt) {
 		watch: {
 			scripts: {
 				files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.*'],
-				tasks: ['jshint', 'shims', 'qunit']
+				tasks: ['jshint', 'qunit']
 			}
 		}
 	});
@@ -78,16 +73,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-yuidoc');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	
-	grunt.registerTask('shims', 'Generate shims for ie6-7', function() {
-		// build file with shims for ie6-7
-		var tpl = grunt.file.read('src/shims/template.js');
-		var ie6and7 = '';
-		// ie 6 and 7 also need JSON and localStorage/sessionStorage
-		ie6and7 += grunt.file.read('src/shims/JSON.js');
-		ie6and7 += grunt.file.read('src/shims/Storage.js');		
-		grunt.file.write('dist/DiskStorage.shims.min.js', tpl.replace('// SHIMS HERE', ie6and7));
-	});
 	
 	grunt.registerTask('logo', 'Copy logo to yuidoc files', function() {
 		grunt.file.copy('logo.png', 'docs/assets/css/logo.png');
@@ -144,7 +129,7 @@ module.exports = function(grunt) {
 	});
 
 	// build steps
-	grunt.registerTask('build', ['shims','uglify','yuidoc','logo','readme']);
+	grunt.registerTask('build', ['uglify','yuidoc','logo','readme']);
 
 	// Default task.
 	grunt.registerTask('default', ['jshint', 'qunit', 'build']);

@@ -2,15 +2,14 @@
 
 Version <%- pkg.version %>, <%- grunt.template.today("mmm yyyy") %>, MIT License
 
-[Download](https://github.com/kensnyder/DiskStorage/blob/master/dist/DiskStorage.min.js?raw=true), [Unit tests](http://sandbox.kendsnyder.com/DiskStorage/test/evergreen.html), [Online Documentation](http://sandbox.kendsnyder.com/DiskStorage/docs/classes/DiskStorage.html)
+[Download](https://github.com/kensnyder/DiskStorage/blob/master/dist/DiskStorage.min.js?raw=true), [Unit tests](http://sandbox.kendsnyder.com/DiskStorage-v3/test/tests.html), [Online Documentation](http://sandbox.kendsnyder.com/DiskStorage-v3/docs/classes/DiskStorage.html)
 
 ## Features
 
-* Less than 1 KB gzipped
+* About 0.4 kb gzipped
 * Supports IE8+, FF 3.5+, Safari 4+, Chrome 4.0+, Opera 10.50+, iPhone 2.0+, Android 2.0+
-* Also supports IE6 and IE7 via the included shim for data up to about 3.5KB
 * Simple abstraction for saving all types of data to disk. (Data must be serializeable via JSON)
-* Flushes to disk at end of event loop to avoid slowdowns when saving lots of data
+* Flushes to disk in batches to avoid performance problems with large data (localStorage and sessionStorage allow 5mb max)
 
 **Include:**
 
@@ -21,7 +20,8 @@ Version <%- pkg.version %>, <%- grunt.template.today("mmm yyyy") %>, MIT License
 **Use:**
 
 ```javascript
-var store = new DiskStorage('mystore','localStorage');
+// basic Usage
+var store = new DiskStorage('mystore');
 
 store.set("prop1", "myString");
 store.get("prop1"); // "myString"
@@ -34,11 +34,20 @@ store.get("prop3"); // {"a":"alpha"}
 
 store.remove("prop2");
 store.exportData(); // {"prop1":"myString","prop3":{"a":"alpha"}}
+
+// Advanced options defaults
+var store2 = new DiskStorage({	
+	engine: 'localStorage',
+	prefix: 'DSto',
+	name: 'default',
+	flushDebounceMs: 15,
+	importKey: undefined
+}):
 ```
 
 ## Quick Documentation
 
-For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder.com/DiskStorage/docs/classes/DiskStorage.html)		
+For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder.com/DiskStorage-v3/docs/classes/DiskStorage.html)		
 
 ### Instance Methods
 
@@ -82,6 +91,11 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 </table>
 
 ## Changelog
+
+**Version 3.0.0, April 2015**
+* Made flush batching smarter
+* New advanced options
+* Dropped support for IE7
 
 **Version 2.0.0, December 2013**
 * Robust version

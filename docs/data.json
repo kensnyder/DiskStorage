@@ -1,8 +1,8 @@
 {
     "project": {
         "name": "DiskStorage",
-        "description": "Wrapper for localStorage that sessionStorage that stores non-string data by serializing via JSON",
-        "version": "2.0.0",
+        "description": "A high performance wrapper for localStorage that sessionStorage that stores non-string data by serializing via JSON",
+        "version": "3.0.0",
         "url": "https://github.com/kensnyder/DiskStorage"
     },
     "files": {
@@ -27,34 +27,63 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "src/DiskStorage.js",
-            "line": 1
+            "line": 5,
+            "description": "Initialize a new store with the given options",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "If a string, it will be interpretted as options.name (see below)",
+                    "type": "Object|String",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "engine",
+                            "description": "\"localStorage\" or \"sessionStorage\"",
+                            "type": "String",
+                            "optional": true,
+                            "optdefault": "\"localStorage\""
+                        },
+                        {
+                            "name": "prefix",
+                            "description": "The prefix for the data key that is actually stored in localStorage or sessionStorage",
+                            "type": "String",
+                            "optional": true,
+                            "optdefault": "\"DSto\""
+                        },
+                        {
+                            "name": "name",
+                            "description": "The namespace that distinguishes this instance from others",
+                            "type": "String",
+                            "optional": true,
+                            "optdefault": "\"default\""
+                        },
+                        {
+                            "name": "flushDebounceMs",
+                            "description": "The number of milliseconds delay before flushing data to disk",
+                            "type": "Number",
+                            "optional": true,
+                            "optdefault": "15"
+                        },
+                        {
+                            "name": "importKey",
+                            "description": "The name of a localStorage key to import data from if it exists",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "DiskStorage"
+            }
         }
     },
     "classitems": [
         {
             "file": "src/DiskStorage.js",
-            "line": 12,
-            "description": "Initialize new store",
-            "params": [
-                {
-                    "name": "name",
-                    "description": "The namespace for this store; defaults to 'default'",
-                    "type": "String",
-                    "optional": true
-                },
-                {
-                    "name": "engine",
-                    "description": "\"localStorage\" or \"sessionStorage\"; defaults to \"localStorage\"",
-                    "type": "String",
-                    "optional": true
-                }
-            ],
-            "is_constructor": 1,
-            "class": "DiskStorage"
-        },
-        {
-            "file": "src/DiskStorage.js",
-            "line": 29,
+            "line": 59,
             "description": "The DiskStorage version",
             "itemtype": "attribute",
             "name": "version",
@@ -64,7 +93,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 37,
+            "line": 67,
             "description": "True if flush should write to disk",
             "itemtype": "property",
             "name": "isDirty",
@@ -73,7 +102,16 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 42,
+            "line": 72,
+            "description": "The prefix for the data key that is actually stored in localStorage or sessionStorage",
+            "itemtype": "property",
+            "name": "prefix",
+            "type": "{String}",
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 77,
             "description": "The namespace of the store",
             "itemtype": "property",
             "name": "name",
@@ -82,7 +120,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 47,
+            "line": 82,
             "description": "\"localStorage\" or \"sessionStorage\"",
             "itemtype": "property",
             "name": "engine",
@@ -91,7 +129,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 52,
+            "line": 87,
             "description": "The data",
             "itemtype": "property",
             "name": "data",
@@ -100,7 +138,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 59,
+            "line": 94,
             "description": "Store data for later retreival",
             "itemtype": "method",
             "name": "set",
@@ -125,7 +163,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 77,
+            "line": 110,
             "description": "Get a previously stored value",
             "itemtype": "method",
             "name": "get",
@@ -144,7 +182,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 88,
+            "line": 121,
             "description": "Unset a stored value",
             "itemtype": "method",
             "name": "remove",
@@ -164,7 +202,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 105,
+            "line": 136,
             "description": "Unset all values",
             "itemtype": "method",
             "name": "clear",
@@ -177,8 +215,8 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 121,
-            "description": "Flush to disk (localStorage or sessionStorage).\nIs triggered automatically on the next event loop when data changes",
+            "line": 150,
+            "description": "Flush to disk (localStorage or sessionStorage).\nUsing this function is not normally necessary. Chanages to data are automatically queued for flush (in 15ms).",
             "itemtype": "method",
             "name": "flush",
             "return": {
@@ -190,45 +228,22 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 137,
-            "description": "Iterate through the collection",
-            "itemtype": "method",
-            "name": "forEach",
-            "params": [
-                {
-                    "name": "callback",
-                    "description": "The iterator function. Will receive three parameters: value, key, this DiskStorage instance",
-                    "type": "Function"
-                },
-                {
-                    "name": "thisArg",
-                    "description": "The scope in which to execute the callback; defaults to this DiskStorage instance",
-                    "type": "Object",
-                    "optional": true
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "DiskStorage"
-            },
-            "chainable": 1,
-            "class": "DiskStorage"
-        },
-        {
-            "file": "src/DiskStorage.js",
-            "line": 155,
-            "description": "Return a copy of the data store",
-            "itemtype": "method",
-            "name": "exportData",
-            "return": {
-                "description": "",
-                "type": "DiskStorage"
-            },
-            "class": "DiskStorage"
-        },
-        {
-            "file": "src/DiskStorage.js",
             "line": 165,
+            "description": "Return a copy of the data store",
+            "see": [
+                "https://jsperf.com/cloning-an-object/2"
+            ],
+            "itemtype": "method",
+            "name": "export",
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 176,
             "description": "Replace the internal data with the one given",
             "itemtype": "method",
             "name": "load",
@@ -248,22 +263,52 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 182,
+            "line": 191,
             "description": "Return a new DiskStorage object with the same keys and values",
             "itemtype": "method",
             "name": "clone",
             "params": [
                 {
-                    "name": "name",
-                    "description": "new namespace; defaults to \"default\"",
-                    "type": "String",
-                    "optional": true
-                },
-                {
-                    "name": "engine",
-                    "description": "\"localStorage\" or \"sessionStorage\"; defaults to the current instance's engine",
-                    "type": "String",
-                    "optional": true
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "name",
+                            "description": "The namespace that distinguishes this instance from others",
+                            "type": "String",
+                            "optional": true,
+                            "optdefault": "\"default\""
+                        },
+                        {
+                            "name": "engine",
+                            "description": "\"localStorage\" or \"sessionStorage\"",
+                            "type": "String",
+                            "optional": true,
+                            "optdefault": "\"localStorage\""
+                        },
+                        {
+                            "name": "prefix",
+                            "description": "The prefix for the data key that is actually stored in localStorage or sessionStorage",
+                            "type": "String",
+                            "optional": true,
+                            "optdefault": "\"__DS__\""
+                        },
+                        {
+                            "name": "flushDebounceMs",
+                            "description": "The number of milliseconds delay before flushing data to disk",
+                            "type": "String",
+                            "optional": true,
+                            "optdefault": "15"
+                        },
+                        {
+                            "name": "importKey",
+                            "description": "The name of a localStorage key to import from if it exists",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
                 }
             ],
             "return": {
@@ -274,8 +319,8 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 200,
-            "description": "Clear the data and remove the DiskStorage data from localStorage/sessionStorage\nNote that the object will flush to disk if any new values are added",
+            "line": 214,
+            "description": "Clear the data and remove the DiskStorage data from localStorage/sessionStorage",
             "itemtype": "method",
             "name": "destroy",
             "return": {
@@ -287,7 +332,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 216,
+            "line": 229,
             "description": "Return true if localStorage, sessionStorage and JSON are available",
             "itemtype": "method",
             "name": "isSupported",
@@ -302,11 +347,7 @@
     "warnings": [
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/DiskStorage.js:121"
-        },
-        {
-            "message": "Missing item type\nInitialize new store",
-            "line": " src/DiskStorage.js:12"
+            "line": " src/DiskStorage.js:150"
         }
     ]
 }

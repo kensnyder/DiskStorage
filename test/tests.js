@@ -10,9 +10,13 @@ function runTests(engine) {
 	
 	module(engine);
 	
-	test('set(), get(), size()', function() {
+	test('set(), get()', function() {
 
-		var store = new DiskStorage('0', engine);
+		var store = new DiskStorage({
+			prefix: 'DSto',
+			name: '0',
+			engine: engine
+		});
 
 		store.set('Number', 1);
 		store.flush();
@@ -31,23 +35,30 @@ function runTests(engine) {
 		store.flush();
 		deepEqual(provider.JSON.parse(provider[engine].getItem('DSto0')), {"Number":1,"Boolean":true,"Array":[1,2,3],"String":"abc"}, 'storing a string');
 
-		strictEqual(store.size(), 4, 'size()');
-	});
-
-	test('storage is shared between instances', function() {
-		var store = new DiskStorage('0', engine);
-
-		strictEqual(store.get('Number'), 1);
+		var store2 = new DiskStorage({
+			prefix: 'DSto',
+			name: '0',
+			engine: engine
+		});
+		strictEqual(store2.get('Number'), 1, 'storage is shared between instances');
 	});
 
 	test('different namespace is separate', function() {
-		var store = new DiskStorage('1', engine);
+		var store = new DiskStorage({
+			prefix: 'DSto',
+			name: '1',
+			engine: engine
+		});
 		strictEqual(store.get('Number'), undefined, 'value from previous storage not set');
 	});
 
 	test('remove()', function() {
 
-		var store = new DiskStorage('2', engine);
+		var store = new DiskStorage({
+			prefix: 'DSto',
+			name: '2',
+			engine: engine
+		});
 
 		store.set('null', null);
 		store.flush();
@@ -60,7 +71,11 @@ function runTests(engine) {
 
 	test('clear()', function() {
 
-		var store = new DiskStorage('2', engine);
+		var store = new DiskStorage({
+			prefix: 'DSto',
+			name: '2',
+			engine: engine
+		});
 
 		store.set('String', 'foo');
 		store.set('Object', {a:1});
@@ -73,44 +88,45 @@ function runTests(engine) {
 
 	});
 
-	test('exportData(), forEach()', function() {
+	test('export()', function() {
 
-		var store = new DiskStorage('3', engine);
+		var store = new DiskStorage({
+			prefix: 'DSto',
+			name: '3',
+			engine: engine
+		});
 		store.set('a', 1);
 		store.set('b', 2);
 
-		var vals = {};
-		store.forEach(function(val, key) {
-			vals[key+'!'] = val;
-		});
-
-		deepEqual(vals, {'a!':1,'b!':2}, 'using forEach');
-
-		var data = store.exportData();
-		deepEqual(data, {a:1,b:2}, 'exportData captures all data');
+		var data = store.export();
+		deepEqual(data, {a:1,b:2}, 'export captures all data');
 
 		data.c = 3;
 		deepEqual(data, {a:1,b:2,c:3});
 
-		deepEqual(store.exportData(), {a:1,b:2}, 'exportData does not export a reference');
+		deepEqual(store.export(), {a:1,b:2}, 'export does not export a reference');
 
 	});
 
 	test('clone()', function() {
 
-		var store = new DiskStorage('4', engine);
+		var store = new DiskStorage({
+			prefix: 'DSto',
+			name: '4',
+			engine: engine
+		});
 		store.set('a', 1);
 		store.set('b', 2);
 		store.flush();
 
-		deepEqual(store.exportData(), {a:1,b:2}, 'exportData captures all data');
+		deepEqual(store.export(), {a:1,b:2}, 'export captures all data');
 
 		var store2 = store.clone('4-copy');
 		deepEqual(store.engine, store2.engine, 'engine is the same');
 		
 		store2.flush();
 		
-		deepEqual(store2.exportData(), {a:1,b:2});
+		deepEqual(store2.export(), {a:1,b:2});
 
 		store.set('c', 1);
 
@@ -121,7 +137,11 @@ function runTests(engine) {
 
 	test('destroy()', function() {
 
-		var store = new DiskStorage('4', engine);
+		var store = new DiskStorage({
+			prefix: 'DSto',
+			name: '4',
+			engine: engine
+		});
 		store.destroy();
 
 		strictEqual(provider[engine].getItem('DSto4'), null, 'no trace of data');

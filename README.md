@@ -1,16 +1,15 @@
 # DiskStorage
 
-Version 2.0.0, Dec 2013, MIT License
+Version 3.0.0, Apr 2015, MIT License
 
-[Download](https://github.com/kensnyder/DiskStorage/blob/master/dist/DiskStorage.min.js?raw=true), [Unit tests](http://sandbox.kendsnyder.com/DiskStorage/test/evergreen.html), [Online Documentation](http://sandbox.kendsnyder.com/DiskStorage/docs/classes/DiskStorage.html)
+[Download](https://github.com/kensnyder/DiskStorage/blob/master/dist/DiskStorage.min.js?raw=true), [Unit tests](http://sandbox.kendsnyder.com/DiskStorage-v3/test/tests.html), [Online Documentation](http://sandbox.kendsnyder.com/DiskStorage-v3/docs/classes/DiskStorage.html)
 
 ## Features
 
-* Less than 1 KB gzipped
+* About 0.4 kb gzipped
 * Supports IE8+, FF 3.5+, Safari 4+, Chrome 4.0+, Opera 10.50+, iPhone 2.0+, Android 2.0+
-* Also supports IE6 and IE7 via the included shim for data up to about 3.5KB
 * Simple abstraction for saving all types of data to disk. (Data must be serializeable via JSON)
-* Flushes to disk at end of event loop to avoid slowdowns when saving lots of data
+* Flushes to disk in batches to avoid performance problems with large data (localStorage and sessionStorage allow 5mb max)
 
 **Include:**
 
@@ -21,7 +20,8 @@ Version 2.0.0, Dec 2013, MIT License
 **Use:**
 
 ```javascript
-var store = new DiskStorage('mystore','localStorage');
+// basic Usage
+var store = new DiskStorage('mystore');
 
 store.set("prop1", "myString");
 store.get("prop1"); // "myString"
@@ -34,11 +34,20 @@ store.get("prop3"); // {"a":"alpha"}
 
 store.remove("prop2");
 store.exportData(); // {"prop1":"myString","prop3":{"a":"alpha"}}
+
+// Advanced options defaults
+var store2 = new DiskStorage({	
+	engine: 'localStorage',
+	prefix: 'DSto',
+	name: 'default',
+	flushDebounceMs: 15,
+	importKey: undefined
+}):
 ```
 
 ## Quick Documentation
 
-For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder.com/DiskStorage/docs/classes/DiskStorage.html)		
+For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder.com/DiskStorage-v3/docs/classes/DiskStorage.html)		
 
 ### Instance Methods
 
@@ -116,32 +125,18 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 	</td>
 	<td>
 		Flush to disk (localStorage or sessionStorage).
-Is triggered automatically on the next event loop when data changes
+Using this function is not normally necessary. Chanages to data are automatically queued for flush (in 15ms).
 	</td>
 </tr>
 
 <tr>
 	<td>
-		<strong>forEach</strong>(callback[, thisArg])
-		<br />
-		{Function} callback The iterator function. Will receive three parameters: value, key, this DiskStorage instance<br />{Object} [thisArg] The scope in which to execute the callback; defaults to this DiskStorage instance<br />
-	</td>
-	<td>
-		{DiskStorage} 
-	</td>
-	<td>
-		Iterate through the collection
-	</td>
-</tr>
-
-<tr>
-	<td>
-		<strong>exportData</strong>()
+		<strong>export</strong>()
 		<br />
 		
 	</td>
 	<td>
-		{DiskStorage} 
+		{Object} 
 	</td>
 	<td>
 		Return a copy of the data store
@@ -164,9 +159,9 @@ Is triggered automatically on the next event loop when data changes
 
 <tr>
 	<td>
-		<strong>clone</strong>([name][, engine])
+		<strong>clone</strong>([options])
 		<br />
-		{String} [name] new namespace; defaults to &quot;default&quot;<br />{String} [engine] &quot;localStorage&quot; or &quot;sessionStorage&quot;; defaults to the current instance&#x27;s engine<br />
+		{Object} [options] <br />
 	</td>
 	<td>
 		{DiskStorage} 
@@ -187,7 +182,6 @@ Is triggered automatically on the next event loop when data changes
 	</td>
 	<td>
 		Clear the data and remove the DiskStorage data from localStorage/sessionStorage
-Note that the object will flush to disk if any new values are added
 	</td>
 </tr>
 
@@ -222,6 +216,11 @@ Note that the object will flush to disk if any new values are added
 	</tr>
 	<tr>
 		<td>{String}</td>
+		<td><strong>prefix</strong></td>
+		<td>The prefix for the data key that is actually stored in localStorage or sessionStorage</td>
+	</tr>
+	<tr>
+		<td>{String}</td>
 		<td><strong>name</strong></td>
 		<td>The namespace of the store</td>
 	</tr>
@@ -239,6 +238,11 @@ Note that the object will flush to disk if any new values are added
 </table>
 
 ## Changelog
+
+**Version 3.0.0, April 2015**
+* Made flush batching smarter
+* New advanced options
+* Dropped support for IE7
 
 **Version 2.0.0, December 2013**
 * Robust version

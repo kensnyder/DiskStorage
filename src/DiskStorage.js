@@ -1,29 +1,59 @@
-/**
- * @class DiskStorage
- */
-(function(global) {
+(function(provider) {
 	
-	"use strict";
-	
-	// provider is the object that provides localStorage, sessionStorage, and JSON
-	// It is window for IE8+; otherwise it is window.DiskStorageShims
-	var provider = global;
+	"use strict";	
 	
 	/**
-	 * Initialize new store
+	 * Initialize a new store with the given options
 	 * 
-	 * @param {String} [name]  The namespace for this store; defaults to 'default'
-	 * @param {String} [engine]  "localStorage" or "sessionStorage"; defaults to "localStorage"
+	 * @class DiskStorage
 	 * @constructor
+	 * @param {Object|String} [options]  If a string, it will be interpretted as options.name (see below)
+	 * @param {String} [options.engine="localStorage"]  "localStorage" or "sessionStorage"
+	 * @param {String} [options.prefix="DSto"]  The prefix for the data key that is actually stored in localStorage or sessionStorage
+	 * @param {String} [options.name="default"]  The namespace that distinguishes this instance from others
+	 * @param {Number} [options.flushDebounceMs=15]  The number of milliseconds delay before flushing data to disk
+	 * @param {String} [options.importKey]  The name of a localStorage key to import data from if it exists
+	 * @return {DiskStorage}
 	 */
-	function DiskStorage(name, engine) {
-		this.isDirty = false;
-		this.name = name || 'default';
-		this.engine = engine || 'localStorage';
-		var data = provider[this.engine].getItem('DSto'+this.name);
-		this.data = data ? provider.JSON.parse(data) : {};
+	function DiskStorage(options) {
 		var self = this;
-		this._flush = function() { self.flush(); };
+		self.isDirty = false;
+		// v2.0 compatibility
+		if (typeof options == 'string') {
+			options = {name: options};
+			if (typeof arguments[1] == 'string') {
+				options.engine = arguments[1];
+			}
+		}
+		options = options || {};
+		// advanced options defaults
+		self.name = options.name || 'default';
+		self.prefix = options.prefix || 'DSto';
+		self.engine = options.engine || 'localStorage';
+		self.flushDebounceMs = options.flushDebounceMs || 15;
+		// grab existing data
+		var data = provider[this.engine].getItem(options.importKey || this.prefix+this.name);		
+		this.data = data ? provider.JSON.parse(data) : {};
+		if (options.importKey && this.data) {
+			provider[this.engine].removeItem(options.importKey);
+		}
+		// setup flush and debounce
+		function debounce(fn) {
+			return function() {
+				clearTimeout(self.flushTimeoutHandle);
+				self.flushTimeoutHandle = setTimeout(fn, self.flushDebounceMs);
+			};
+		}		
+		// flush no more often than every 15ms
+		// to ensure decent performance on JSON serialization of large objects
+		this._flush = debounce(function() { self.flush(); });
+		// but make sure to flush before page navigation if needed
+		window.addEventListener('beforeunload', function() {
+			clearTimeout(self.flushTimeoutHandle);
+			if (self.isDirty) {
+				self.flush();
+			}
+		});
 	}
 	
 	/**
@@ -38,6 +68,11 @@
 	 * True if flush should write to disk
 	 * @property isDirty  
 	 * @type {Boolean}
+	 */
+	/**
+	 * The prefix for the data key that is actually stored in localStorage or sessionStorage
+	 * @property prefix
+	 * @type {String}  
 	 */
 	/**
 	 * The namespace of the store
@@ -67,10 +102,8 @@
 		 */
 		set: function(key, value) {
 			this.data[key] = value;
-			if (!this.isDirty) {
-				setTimeout(this._flush, 0);
-			}
 			this.isDirty = true;
+			this._flush();
 			return this;
 		},
 
@@ -95,10 +128,8 @@
 		 */
 		remove: function(key) {
 			delete this.data[key];
-			if (!this.isDirty) {
-				setTimeout(this._flush, 0);
-			}
 			this.isDirty = true;
+			this._flush();
 			return this;
 		},
 
@@ -111,55 +142,35 @@
 		 */
 		clear: function() {
 			this.data = {};
-			if (!this.isDirty) {
-				setTimeout(this._flush, 0);
-			}
 			this.isDirty = true;
+			this._flush();
 			return this;
 		},
 		
 		/**
 		 * Flush to disk (localStorage or sessionStorage).
-		 * Is triggered automatically on the next event loop when data changes
+		 * Using this function is not normally necessary. Chanages to data are automatically queued for flush (in 15ms).
 		 * 
 		 * @method flush
 		 * @returns {DiskStorage}
 		 * @chainable
 		 */
 		flush: function() {
-			if (this.isDirty) {
-				provider[this.engine].setItem('DSto'+this.name, provider.JSON.stringify(this.data));
-				this.isDirty = false;
-			}
-			return this;
-		},		
-
-		/**
-		 * Iterate through the collection
-		 *
-		 * @method forEach
-		 * @param {Function} callback  The iterator function. Will receive three parameters: value, key, this DiskStorage instance
-		 * @param {Object} [thisArg]  The scope in which to execute the callback; defaults to this DiskStorage instance
-		 * @return {DiskStorage}
-		 * @chainable
-		 */
-		forEach: function(callback, thisArg) {
-			for (var k in this.data) {
-				if (this.data.hasOwnProperty(k)) {
-					callback.call(thisArg || this, this.data[k], k, this);
-				}
-			}
+			clearTimeout(this.flushTimeoutHandle);
+			provider[this.engine].setItem(this.prefix+this.name, provider.JSON.stringify(this.data));
+			this.isDirty = false;
 			return this;
 		},
 
 		/**
 		 * Return a copy of the data store
+		 * @see https://jsperf.com/cloning-an-object/2
 		 *
-		 * @method exportData
-		 * @return {DiskStorage}
+		 * @method export
+		 * @return {Object}
 		 */
-		exportData: function() {
-			return Object.clone ? Object.clone(this.data) : provider.JSON.parse(provider.JSON.stringify(this.data));
+		export: function() {
+			return provider.JSON.parse(provider.JSON.stringify(this.data));
 		},
 
 		/**
@@ -172,10 +183,8 @@
 		 */
 		load: function(data) {
 			this.data = data;
-			if (!this.isDirty) {
-				setTimeout(this._flush, 0);
-			}
-			this.isDirty = true;		
+			this.isDirty = true;
+			this._flush();		
 			return this;
 		},
 
@@ -183,30 +192,34 @@
 		 * Return a new DiskStorage object with the same keys and values
 		 *
 		 * @method clone
-		 * @param {String} [name]  new namespace; defaults to "default"
-		 * @param {String} [engine]  "localStorage" or "sessionStorage"; defaults to the current instance's engine
+		 * @param {Object} [options]
+		 * @param {String} [options.name="default"]  The namespace that distinguishes this instance from others
+		 * @param {String} [options.engine="localStorage"]  "localStorage" or "sessionStorage"
+		 * @param {String} [options.prefix="__DS__"]  The prefix for the data key that is actually stored in localStorage or sessionStorage
+		 * @param {String} [options.flushDebounceMs=15]  The number of milliseconds delay before flushing data to disk
+		 * @param {String} [options.importKey]  The name of a localStorage key to import from if it exists
 		 * @return {DiskStorage}
 		 */
-		clone: function(name, engine) {
-			name = name || 'default';
-			if (name == this.name && engine == this.engine) {
-				throw new Error('DiskStorage: cannot clone to same namespace');
-			}
-			var cloned = new DiskStorage(name, engine || this.engine);
-			cloned.load(this.exportData());
+		clone: function(options) {
+			options = options || {};
+			var cloned = new DiskStorage({
+				prefix: options.prefix || this.prefix,
+				name: options.name || this.name,
+				engine: options.engine || this.engine
+			});
+			cloned.load(this.export()); // export so that each instance refers to its own object
 			return cloned;
 		},
 
 		/**
 		 * Clear the data and remove the DiskStorage data from localStorage/sessionStorage
-		 * Note that the object will flush to disk if any new values are added
 		 *
 		 * @method destroy
 		 * @return {DiskStorage}
 		 * @chainable
 		 */
 		destroy: function() {
-			provider[this.engine].removeItem('DSto'+this.name);
+			provider[this.engine].removeItem(this.prefix+this.name);
 			this.data = {};
 			return this;
 		}
@@ -227,11 +240,6 @@
 	};
 
 	// expose to window
-	global.DiskStorage = DiskStorage;
-	
-	// attempt to use shims if needed
-	if (!DiskStorage.isSupported()) {
-		provider = global.DiskStorageShims;
-	}
+	window.DiskStorage = DiskStorage;
 
 })(window);
