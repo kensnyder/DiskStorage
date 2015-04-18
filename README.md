@@ -1,6 +1,6 @@
 # DiskStorage
 
-Version 3.0.0, Apr 2015, MIT License
+Version 3.0.1, Apr 2015, MIT License
 
 [Download](https://github.com/kensnyder/DiskStorage/blob/master/dist/DiskStorage.min.js?raw=true), [Unit tests](http://sandbox.kendsnyder.com/DiskStorage-v3/test/tests.html), [Online Documentation](http://sandbox.kendsnyder.com/DiskStorage-v3/docs/classes/DiskStorage.html)
 
@@ -83,6 +83,20 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 	</td>
 	<td>
 		Get a previously stored value
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<strong>has</strong>(key)
+		<br />
+		{String} key The name of the value<br />
+	</td>
+	<td>
+		{Boolean} 
+	</td>
+	<td>
+		Check if a particular key has a value (even undefined)
 	</td>
 </tr>
 
@@ -239,8 +253,9 @@ Using this function is not normally necessary. Chanages to data are automaticall
 
 ## Changelog
 
-**Version 3.0.0, April 2015**
+**Version 3.0.1, April 2015**
 * Made flush batching smarter
+* has() function
 * New advanced options
 * Dropped support for IE7
 

@@ -2,7 +2,7 @@
     "project": {
         "name": "DiskStorage",
         "description": "A high performance wrapper for localStorage that sessionStorage that stores non-string data by serializing via JSON",
-        "version": "3.0.0",
+        "version": "3.0.1",
         "url": "https://github.com/kensnyder/DiskStorage"
     },
     "files": {
@@ -183,6 +183,25 @@
         {
             "file": "src/DiskStorage.js",
             "line": 121,
+            "description": "Check if a particular key has a value (even undefined)",
+            "itemtype": "method",
+            "name": "has",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "The name of the value",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "class": "DiskStorage"
+        },
+        {
+            "file": "src/DiskStorage.js",
+            "line": 132,
             "description": "Unset a stored value",
             "itemtype": "method",
             "name": "remove",
@@ -202,7 +221,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 136,
+            "line": 147,
             "description": "Unset all values",
             "itemtype": "method",
             "name": "clear",
@@ -215,7 +234,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 150,
+            "line": 161,
             "description": "Flush to disk (localStorage or sessionStorage).\nUsing this function is not normally necessary. Chanages to data are automatically queued for flush (in 15ms).",
             "itemtype": "method",
             "name": "flush",
@@ -228,7 +247,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 165,
+            "line": 176,
             "description": "Return a copy of the data store",
             "see": [
                 "https://jsperf.com/cloning-an-object/2"
@@ -243,7 +262,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 176,
+            "line": 187,
             "description": "Replace the internal data with the one given",
             "itemtype": "method",
             "name": "load",
@@ -263,7 +282,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 191,
+            "line": 202,
             "description": "Return a new DiskStorage object with the same keys and values",
             "itemtype": "method",
             "name": "clone",
@@ -319,7 +338,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 214,
+            "line": 225,
             "description": "Clear the data and remove the DiskStorage data from localStorage/sessionStorage",
             "itemtype": "method",
             "name": "destroy",
@@ -332,7 +351,7 @@
         },
         {
             "file": "src/DiskStorage.js",
-            "line": 229,
+            "line": 240,
             "description": "Return true if localStorage, sessionStorage and JSON are available",
             "itemtype": "method",
             "name": "isSupported",
@@ -347,7 +366,7 @@
     "warnings": [
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/DiskStorage.js:150"
+            "line": " src/DiskStorage.js:161"
         }
     ]
 }

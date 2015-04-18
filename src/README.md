@@ -92,8 +92,9 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 
 ## Changelog
 
-**Version 3.0.0, April 2015**
+**Version 3.0.1, April 2015**
 * Made flush batching smarter
+* has() function
 * New advanced options
 * Dropped support for IE7
 

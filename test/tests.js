@@ -43,6 +43,18 @@ function runTests(engine) {
 		strictEqual(store2.get('Number'), 1, 'storage is shared between instances');
 	});
 
+	test('has()', function() {
+		var store = new DiskStorage({
+			prefix: 'DSto',
+			name: '0',
+			engine: engine
+		});
+		strictEqual(store.has('foo'), false, 'unset value');
+		store.set('foo', false);
+		strictEqual(store.get('foo'), false, 'value got set');
+		strictEqual(store.has('foo'), true, 'has value even when false');
+	});
+
 	test('different namespace is separate', function() {
 		var store = new DiskStorage({
 			prefix: 'DSto',

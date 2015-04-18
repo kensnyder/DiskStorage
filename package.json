@@ -2,7 +2,7 @@
   "name": "DiskStorage",
   "description": "A high performance wrapper for localStorage that sessionStorage that stores non-string data by serializing via JSON",
   "keywords": ["localStorage","sessionStorage","Storage","data","datastore"],
-  "version": "3.0.0",
+  "version": "3.0.1",
   "author": {
     "name": "Ken Snyder",
     "email": "kendsnyder@gmail.com",

@@ -100,7 +100,7 @@
 		 * @return {DiskStorage}
 		 * @chainable
 		 */
-		set: function(key, value) {
+		set: function set(key, value) {
 			this.data[key] = value;
 			this.isDirty = true;
 			this._flush();
@@ -114,8 +114,19 @@
 		 * @param {String} key  The name of the value
 		 * @return {Any}
 		 */
-		get: function(key) {
+		get: function get(key) {
 			return this.data[key];
+		},
+
+		/**
+		 * Check if a particular key has a value (even undefined)
+		 *
+		 * @method has
+		 * @param {String} key  The name of the value
+		 * @return {Boolean}
+		 */
+		has: function has(key) {
+			return (key in this.data);
 		},
 
 		/**
@@ -126,7 +137,7 @@
 		 * @return {DiskStorage}
 		 * @chainable
 		 */
-		remove: function(key) {
+		remove: function remove(key) {
 			delete this.data[key];
 			this.isDirty = true;
 			this._flush();
@@ -140,7 +151,7 @@
 		 * @return {DiskStorage}
 		 * @chainable
 		 */
-		clear: function() {
+		clear: function clear() {
 			this.data = {};
 			this.isDirty = true;
 			this._flush();
@@ -155,7 +166,7 @@
 		 * @returns {DiskStorage}
 		 * @chainable
 		 */
-		flush: function() {
+		flush: function flush() {
 			clearTimeout(this.flushTimeoutHandle);
 			provider[this.engine].setItem(this.prefix+this.name, provider.JSON.stringify(this.data));
 			this.isDirty = false;
@@ -169,7 +180,7 @@
 		 * @method export
 		 * @return {Object}
 		 */
-		export: function() {
+		export: function export_() {
 			return provider.JSON.parse(provider.JSON.stringify(this.data));
 		},
 
@@ -181,7 +192,7 @@
 		 * @return {DiskStorage}
 		 * @chainable
 		 */
-		load: function(data) {
+		load: function load(data) {
 			this.data = data;
 			this.isDirty = true;
 			this._flush();		
@@ -200,7 +211,7 @@
 		 * @param {String} [options.importKey]  The name of a localStorage key to import from if it exists
 		 * @return {DiskStorage}
 		 */
-		clone: function(options) {
+		clone: function clone(options) {
 			options = options || {};
 			var cloned = new DiskStorage({
 				prefix: options.prefix || this.prefix,
@@ -218,7 +229,7 @@
 		 * @return {DiskStorage}
 		 * @chainable
 		 */
-		destroy: function() {
+		destroy: function destroy() {
 			provider[this.engine].removeItem(this.prefix+this.name);
 			this.data = {};
 			return this;
@@ -233,7 +244,7 @@
 	 * @static
 	 * @return {Boolean}  True if browser will support DiskStorage
 	 */
-	DiskStorage.isSupported = function() {
+	DiskStorage.isSupported = function isSupported() {
 		return provider.localStorage && 
 			provider.sessionStorage &&
 			provider.JSON;
