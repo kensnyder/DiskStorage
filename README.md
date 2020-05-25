@@ -139,7 +139,7 @@ For full documentation, see [the YUIDoc documentation](http://sandbox.kendsnyder
 	</td>
 	<td>
 		Flush to disk (localStorage or sessionStorage).
-Using this function is not normally necessary. Chanages to data are automatically queued for flush (in 15ms).
+Using this function is not normally necessary. Changes to data are automatically queued for flush (in 15ms).
 	</td>
 </tr>
 
